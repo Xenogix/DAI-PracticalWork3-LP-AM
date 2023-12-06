@@ -1,5 +1,5 @@
 package ch.heigvd.shared.abstractions;
 
 public interface VirtualClient {
-    void send();
+    void send(Command command);
 }
