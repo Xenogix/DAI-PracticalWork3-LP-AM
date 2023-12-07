@@ -1,7 +1,9 @@
 package ch.heigvd.client.net;
 
-import ch.heigvd.client.ClientStorage;
 import ch.heigvd.client.commands.ClientCommand;
+import ch.heigvd.client.commands.ClientCommandHandler;
+import ch.heigvd.server.commands.ServerCommand;
+import ch.heigvd.shared.abstractions.ClientVirtualEndpoint;
 import ch.heigvd.shared.abstractions.Command;
 import ch.heigvd.shared.converter.CommandConverter;
 
@@ -9,18 +11,29 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 
-public class ClientCommandEndpoint {
-
+public class ClientCommandEndpoint implements ClientVirtualEndpoint {
     public final static short LISTENER_PORT = 32451;
+    private final String serverAddress;
+    private final int serverPort;
 
-    private final ClientStorage clientStorage = ClientStorage.getInstance();
-    public void sendCommand(ClientCommand clientCommand){
+    public ClientCommandEndpoint(String serverAddress, int serverPort) {
+        this.serverAddress = serverAddress;
+        this.serverPort = serverPort;
+    }
+
+    @Override
+    public void send(ClientCommand clientCommand) throws IOException {
+
+        if(clientCommand == null) return;
+
         //Server socket creation
         try(DatagramSocket serverSocket = new DatagramSocket(LISTENER_PORT)){
 
             byte[] clientCommandData = CommandConverter.serialize(clientCommand);
-            DatagramPacket sendPacket = new DatagramPacket(clientCommandData, clientCommandData.length, InetAddress.getByName(clientStorage.getServerAddress()), clientStorage.getServerPort());
+            InetAddress serverInetAddress = InetAddress.getByName(serverAddress);
+            DatagramPacket sendPacket = new DatagramPacket(clientCommandData, clientCommandData.length,serverInetAddress , serverPort);
             serverSocket.send(sendPacket);
 
             //Receive reply from server
@@ -28,10 +41,9 @@ public class ClientCommandEndpoint {
             DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
             serverSocket.receive(receivePacket);
 
-            Command receivedCommand = CommandConverter.deserialize(receiveData);
+            ServerCommand receivedCommand = CommandConverter.<ServerCommand>deserialize(receiveData, ServerCommand.class);
 
-
-        }catch(IOException ex){
+        } catch(SocketException ex){
             throw new RuntimeException(ex); //Todo
         }
     }

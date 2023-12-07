@@ -1,6 +1,7 @@
 package ch.heigvd.client.commands;
 
 import ch.heigvd.shared.abstractions.Command;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ClientCommand implements Command {
 
@@ -20,7 +21,8 @@ public class ClientCommand implements Command {
      * @param clientCommandsType
      * @param value
      */
-    public ClientCommand(ClientCommandsType clientCommandsType, Object value){
+
+    public ClientCommand( @JsonProperty("command_type") ClientCommandsType clientCommandsType, @JsonProperty("value") Object value){
         this.clientCommandsType = clientCommandsType;
         this.value = value;
     }

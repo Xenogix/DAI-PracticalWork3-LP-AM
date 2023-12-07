@@ -1,10 +1,11 @@
 package ch.heigvd.server;
 
 import ch.heigvd.shared.models.Game;
+import ch.heigvd.shared.rules.GameEngine;
 
-public class ServerStorage {
+class ServerStorage {
     private static ServerStorage instance;
-    private final Game game = new Game();
+    private final GameEngine game = new GameEngine();
 
     private ServerStorage() {
     }
@@ -15,7 +16,7 @@ public class ServerStorage {
         return  instance;
     }
 
-    public Game getGame() {
+    public GameEngine getGameEngine() {
         return game;
     }
 }

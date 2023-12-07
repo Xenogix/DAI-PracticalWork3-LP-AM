@@ -1,19 +1,11 @@
 package ch.heigvd.server.commands;
 
 import ch.heigvd.client.commands.ClientCommand;
-import ch.heigvd.shared.abstractions.VirtualClient;
+import ch.heigvd.shared.abstractions.ServerVirtualEndpoint;
 
 public class ServerCommandHandler{
-    private final VirtualClient virtualClient;
-
-    public ServerCommandHandler(VirtualClient virtualClient){
-        this.virtualClient = virtualClient;
-    }
-
-    public void handler(ClientCommand clientCommand){
-
-        //join
-
-        //input
+    public ServerCommand handler(ClientCommand clientCommand){
+        System.out.println(clientCommand.getValue());
+        return new ServerCommand(ServerCommandsType.ACCEPT, "accept");
     }
 }
