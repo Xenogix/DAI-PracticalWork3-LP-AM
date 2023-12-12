@@ -8,17 +8,20 @@ import java.nio.charset.StandardCharsets;
 
 public class UpdateClientHandler {
 
+    private final static short PORT = 1234;
+    private final static String interfaceName = "e/0";
+
+    private final static String HOST = "host";
+
     private final ClientStorage clientStorage = ClientStorage.getInstance();
 
     public void update(){
 
         try(MulticastSocket socket = new MulticastSocket()){
-            InetAddress multicastAddress = InetAddress.getByName();
-            InetSocketAddress group = new InetSocketAddress();
-            NetworkInterface networkInterface = NetworkInterface.getByName();
+            InetAddress multicastAddress = InetAddress.getByName(HOST);
+            InetSocketAddress group = new InetSocketAddress("230.0.0.0", PORT);
+            NetworkInterface networkInterface = NetworkInterface.getByName(interfaceName);
             socket.joinGroup(group, networkInterface);
-
-            socket.joinGroup();
 
             byte[] receiveData = new byte[1024];
 
