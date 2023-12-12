@@ -9,17 +9,25 @@ import java.nio.charset.StandardCharsets;
 public class UpdateClientHandler {
 
     private final static short PORT = 1234;
-    private final static String interfaceName = "e/0";
+    private final static String interfaceName = "e/0"; //todo
 
-    private final static String HOST = "host";
+    private final static String HOST = "localhost"; //todo
 
     private final ClientStorage clientStorage = ClientStorage.getInstance();
+
+    private final String serverAddress;
+    private final String serverPort;
+
+    public UpdateClientHandler(String serverAddress, String serverPort){
+        this.serverAddress = serverAddress;
+        this.serverPort = serverPort;
+    }
 
     public void update(){
 
         try(MulticastSocket socket = new MulticastSocket()){
-            InetAddress multicastAddress = InetAddress.getByName(HOST);
-            InetSocketAddress group = new InetSocketAddress("230.0.0.0", PORT);
+            InetAddress multicastAddress = InetAddress.getByName(serverAddress);
+            InetSocketAddress group = new InetSocketAddress(multicastAddress, Integer.parseInt(serverPort));
             NetworkInterface networkInterface = NetworkInterface.getByName(interfaceName);
             socket.joinGroup(group, networkInterface);
 

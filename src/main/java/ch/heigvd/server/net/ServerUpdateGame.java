@@ -6,18 +6,15 @@ import java.net.*;
 public class ServerUpdateGame {
     private final static short PORT = 1234;
 
-    private final static String interfaceName = "e/0";
-
     public void sendUpdate(){
 
-        try(MulticastSocket socket = new MulticastSocket()){
+        try(DatagramSocket socket = new DatagramSocket()){
 
             InetAddress multicastAddress = InetAddress.getByName("230.0.0.0");
             InetSocketAddress group = new InetSocketAddress(multicastAddress, PORT);
-            NetworkInterface networkInterface = NetworkInterface.getByName(interfaceName);
 
             try{
-                byte[] data = new byte[];
+                byte[] data = new byte[1024]; //todo what do we want to send
 
                 DatagramPacket datagram = new DatagramPacket(data, data.length, group);
 
