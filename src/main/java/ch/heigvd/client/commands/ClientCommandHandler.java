@@ -1,11 +1,10 @@
 package ch.heigvd.client.commands;
 
-import ch.heigvd.server.commands.ServerCommand;
-import ch.heigvd.shared.abstractions.ClientVirtualEndpoint;
+import ch.heigvd.data.commands.Command;
 
 public class ClientCommandHandler {
 
-    public void handle(ServerCommand serverCommand){
+    public void handle(Command serverCommand){
         //Accept
 
         //Refuse

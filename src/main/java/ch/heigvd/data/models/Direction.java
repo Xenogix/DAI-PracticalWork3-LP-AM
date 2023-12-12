@@ -1,4 +1,4 @@
-package ch.heigvd.shared.models;
+package ch.heigvd.data.models;
 
 public enum Direction {
     TOP,
