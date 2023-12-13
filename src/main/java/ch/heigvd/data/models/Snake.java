@@ -1,21 +1,28 @@
-package ch.heigvd.shared.models;
+package ch.heigvd.data.models;
 
 public class Snake {
-    private String id;
+    private String userId;
+    private String username;
+    private Color color;
     private Point position;
     private int length;
     private Direction direction;
 
-    public Snake(String id, Point position) {
-        this.id = id;
+    public Snake(String userId, String username, Point position, Color color) {
+        this.userId = userId;
         this.position = position;
+        this.username = username;
+        this.color = Color.Blue;
     }
 
-    public String getId(){
-        return id;
+    public String getUserId(){
+        return userId;
     }
-    public void setId(String id) {
-        this.id = id;
+    public String getUsername() {
+        return username;
+    }
+    public Color getColor() {
+        return color;
     }
     public Point getPosition() {
         return position;

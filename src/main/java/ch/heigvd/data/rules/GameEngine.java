@@ -1,8 +1,8 @@
-package ch.heigvd.shared.rules;
+package ch.heigvd.data.rules;
 
-import ch.heigvd.shared.models.Game;
-import ch.heigvd.shared.models.Direction;
-import ch.heigvd.shared.models.Snake;
+import ch.heigvd.data.models.Game;
+import ch.heigvd.data.models.Direction;
+import ch.heigvd.data.models.Snake;
 
 public class GameEngine {
 
@@ -29,7 +29,7 @@ public class GameEngine {
 
     private Snake getSnakeByID(String id) {
         for(Snake snake : game.getSnakes())
-            if(snake.getId() == id) return snake;
+            if(snake.getUserId() == id) return snake;
         return null;
     }
 }
