@@ -4,7 +4,6 @@ import ch.heigvd.data.models.Game;
 
 class ClientStorage {
     private static ClientStorage instance;
-
     private String userId;
     private Game game;
 

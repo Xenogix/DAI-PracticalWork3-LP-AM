@@ -1,33 +1,36 @@
 package ch.heigvd.server.net;
 
+import ch.heigvd.data.abstractions.ResponseCommandHandler;
 import ch.heigvd.data.commands.Command;
-import ch.heigvd.server.commands.ServerCommandHandler;
 import ch.heigvd.data.abstractions.ServerVirtualEndpoint;
 import ch.heigvd.data.converter.CommandSerializer;
+import ch.heigvd.server.commands.ServerCommandHandler;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-public class ServerResponder implements Runnable, ServerVirtualEndpoint {
+public class CommandResponder implements Runnable, ServerVirtualEndpoint {
     private final DatagramPacket packet;
     private final DatagramSocket socket;
-    private final ServerCommandHandler serverCommandHandler = new ServerCommandHandler();
+    private final ResponseCommandHandler commandHandler;
 
-    public ServerResponder(DatagramPacket packet, DatagramSocket socket){
+    public CommandResponder(DatagramPacket packet, DatagramSocket socket, ResponseCommandHandler commandHandler){
         this.packet = packet;
         this.socket = socket;
+        this.commandHandler = commandHandler;
     }
 
     @Override
     public void run() {
+        Command clientCommand = CommandSerializer.deserialize(packet.getData());
+        Command commandToSend = commandHandler.handle(clientCommand);
+
         try {
-            Command clientCommand = CommandSerializer.deserialize(packet.getData());
-            Command commandToSend = serverCommandHandler.handler(clientCommand);
             send(commandToSend);
         }
         catch (IOException ex) {
-            //To do
+
         }
     }
 

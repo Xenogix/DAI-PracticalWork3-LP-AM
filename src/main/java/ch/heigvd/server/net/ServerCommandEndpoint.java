@@ -1,14 +1,17 @@
 package ch.heigvd.server.net;
 
+import ch.heigvd.data.abstractions.ResponseCommandHandler;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 public class ServerCommandEndpoint {
-
     private final int serverPort;
+    private final ResponseCommandHandler commandHandler;
 
-    public ServerCommandEndpoint(int serverPort) {
+    public ServerCommandEndpoint(int serverPort, ResponseCommandHandler commandHandler) {
         this.serverPort = serverPort;
+        this.commandHandler = commandHandler;
     }
 
     public void start(){
@@ -19,7 +22,7 @@ public class ServerCommandEndpoint {
                 DatagramPacket packet = new DatagramPacket(data, data.length);
                 socket.receive(packet);
 
-                new Thread(new ServerResponder(packet, socket)).start();
+                new Thread(new CommandResponder(packet, socket, commandHandler)).start();
             }
         }catch (Exception e){
 

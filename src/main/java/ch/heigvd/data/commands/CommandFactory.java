@@ -1,5 +1,6 @@
 package ch.heigvd.data.commands;
 
+import ch.heigvd.data.commands.data.*;
 import ch.heigvd.data.models.Color;
 import ch.heigvd.data.models.Game;
 import ch.heigvd.data.models.Input;
