@@ -1,7 +1,8 @@
 package ch.heigvd;
 
 import ch.heigvd.data.abstractions.GameUpdateListener;
-import ch.heigvd.data.abstractions.VirtualServer;
+import ch.heigvd.data.abstractions.ResponseCommandHandler;
+import ch.heigvd.data.abstractions.VirtualUpdateServer;
 import ch.heigvd.data.models.Game;
 import ch.heigvd.server.ServerStorage;
 import ch.heigvd.server.commands.ServerCommandHandler;
@@ -19,12 +20,12 @@ public class MainServer {
     public static void main(String[] args) {
 
         // Initiate the unicast server
-        ServerCommandHandler commandHandler = new ServerCommandHandler();
+        ResponseCommandHandler commandHandler = new ServerCommandHandler();
         ServerCommandEndpoint testServer = new ServerCommandEndpoint(SERVER_PORT, commandHandler);
 
         // Initiate the multicast server and event handling
         ServerStorage storage = ServerStorage.getInstance();
-        ServerUpdateSender sender = new ServerUpdateSender(UPDATE_ADDRESS, UPDATE_PORT);
+        VirtualUpdateServer sender = new ServerUpdateSender(UPDATE_ADDRESS, UPDATE_PORT);
         GameUpdateListener gameUpdateListener = new DummyGameUpdateListener(sender);
         storage.getGameEngine().addListner(gameUpdateListener);
 
@@ -43,12 +44,12 @@ public class MainServer {
         }
     }
 
-    private static class DummyGameUpdateListener implements GameUpdateListener {
-        private final ServerUpdateSender updateSender;
+    static class DummyGameUpdateListener implements GameUpdateListener {
+        private final VirtualUpdateServer updateSender;
         private final ExecutorService executorService = Executors.newSingleThreadExecutor();
         private Future<?> updateTask;
 
-        public DummyGameUpdateListener(ServerUpdateSender updateSender) {
+        public DummyGameUpdateListener(VirtualUpdateServer updateSender) {
             this.updateSender = updateSender;
         }
 

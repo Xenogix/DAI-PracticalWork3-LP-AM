@@ -5,5 +5,5 @@ import ch.heigvd.data.commands.Command;
 import java.io.IOException;
 
 public interface VirtualClient {
-    Command send(Command clientCommand) throws IOException;
+    Command send(Command command) throws IOException;
 }

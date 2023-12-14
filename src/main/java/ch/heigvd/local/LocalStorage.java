@@ -7,7 +7,6 @@ class LocalStorage {
     private final GameEngine gameEngine = new GameEngine();
 
     private LocalStorage() {
-
     }
 
     public static synchronized LocalStorage getInstance() {

@@ -1,5 +1,6 @@
 package ch.heigvd.server.net;
 
+import ch.heigvd.data.abstractions.VirtualUpdateServer;
 import ch.heigvd.data.commands.Command;
 import ch.heigvd.data.commands.CommandFactory;
 import ch.heigvd.data.converter.CommandSerializer;
@@ -8,7 +9,7 @@ import ch.heigvd.data.models.Game;
 import java.io.IOException;
 import java.net.*;
 
-public class ServerUpdateSender {
+public class ServerUpdateSender implements VirtualUpdateServer {
     private final String multicastAddress;
     private final int multicastPort;
 

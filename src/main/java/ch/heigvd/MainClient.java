@@ -25,40 +25,46 @@ public class MainClient {
     private static final Random RANDOM = new Random();
 
     public static void main(String[] args) {
-        try {
-            // Create the endpoint and command sender
-            CommandHandler updateHandler = new DummyUpdateHandler();
-            ClientUpdateEndpoint endpoint = new ClientUpdateEndpoint(UPDATE_ADDRESS, UPDATE_PORT, updateHandler);
-            VirtualClient commandSender = new ClientCommandSender(SERVER_ADDRESS, SERVER_PORT);
 
-            // Start listening updates
-            Thread endpointThread = new Thread(endpoint);
-            endpointThread.start();
+        // Create the endpoint and command sender
+        CommandHandler updateHandler = new DummyUpdateHandler();
+        ClientUpdateEndpoint endpoint = new ClientUpdateEndpoint(UPDATE_ADDRESS, UPDATE_PORT, updateHandler);
+        VirtualClient commandSender = new ClientCommandSender(SERVER_ADDRESS, SERVER_PORT);
 
-            // Send join command to the server
-            Color[] colors = Color.values();
-            Direction[] directions = Direction.values();
-            int callCount = 0;
-            while (true) {
-                String username = String.format("SnakePlayer%d", callCount);
-                Color color = colors[RANDOM.nextInt(colors.length)];
-                Direction input = directions[RANDOM.nextInt(directions.length)];
-                Command recievedCommand = commandSender.send(CommandFactory.getJoinCommand(username,color));
-                if(recievedCommand.getCommandType() == CommandType.ACCEPT) {
-                    AcceptCommandData data = (AcceptCommandData)recievedCommand.getValue();
-                    commandSender.send(CommandFactory.getInputCommand(data.userId(),input));
-                }
+        // Start listening updates
+        Thread endpointThread = new Thread(endpoint);
+        endpointThread.start();
 
-                callCount++;
-                Thread.sleep(1000);
-            }
-        }
-        catch (Exception ex) {
-            System.out.println(ex);
-        }
+        // Start dummy client inputs
+        StartDummyInput(commandSender);
     }
 
-    private static class DummyUpdateHandler implements CommandHandler {
+    static void StartDummyInput(VirtualClient virtualClient) {
+         try {
+             // Send join command to the server
+             Color[] colors = Color.values();
+             Direction[] directions = Direction.values();
+             int callCount = 0;
+             while (true) {
+                 String username = String.format("SnakePlayer%d", callCount);
+                 Color color = colors[RANDOM.nextInt(colors.length)];
+                 Direction input = directions[RANDOM.nextInt(directions.length)];
+                 Command recievedCommand = virtualClient.send(CommandFactory.getJoinCommand(username, color));
+                 if (recievedCommand.getCommandType() == CommandType.ACCEPT) {
+                     AcceptCommandData data = (AcceptCommandData) recievedCommand.getValue();
+                     virtualClient.send(CommandFactory.getInputCommand(data.userId(), input));
+                 }
+
+                 callCount++;
+                 Thread.sleep(1000);
+             }
+         }
+         catch (Exception ex) {
+
+         }
+    }
+
+    static class DummyUpdateHandler implements CommandHandler {
 
         @Override
         public void handle(Command command) {

@@ -18,7 +18,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>ch.heigvd.MainClient</mainClass>
+                  <mainClass>ch.heigvd.MainLocal</mainClass>
                 </transformer>
                 <transformer>
                   <resource>MANIFEST.MF</resource>

@@ -20,14 +20,14 @@ public class ClientCommandSender implements VirtualClient {
     }
 
     @Override
-    public Command send(Command clientCommand) throws IOException {
+    public Command send(Command command) throws IOException {
 
-        if(clientCommand == null) return null;
+        if(command == null) return null;
 
         //Server socket creation
         try(DatagramSocket serverSocket = new DatagramSocket()){
 
-            byte[] clientCommandData = CommandSerializer.serialize(clientCommand);
+            byte[] clientCommandData = CommandSerializer.serialize(command);
             InetAddress serverInetAddress = InetAddress.getByName(serverAddress);
             DatagramPacket sendPacket = new DatagramPacket(clientCommandData, clientCommandData.length,serverInetAddress , serverPort);
             serverSocket.send(sendPacket);
