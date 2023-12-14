@@ -1,8 +1,9 @@
 package ch.heigvd.data.commands;
 
+import ch.heigvd.data.commands.data.*;
 import ch.heigvd.data.models.Color;
+import ch.heigvd.data.models.Direction;
 import ch.heigvd.data.models.Game;
-import ch.heigvd.data.models.Input;
 
 public class CommandFactory {
     public static Command getAcceptCommand(String userId) {
@@ -18,7 +19,7 @@ public class CommandFactory {
     public static Command getJoinCommand(String username, Color snakeColor) {
         return new Command(CommandType.JOIN, new JoinCommandData(username, snakeColor));
     }
-    public static Command getInputCommand(String userId, Input input) {
-        return new Command(CommandType.INPUT, new InputCommandData(userId, input));
+    public static Command getInputCommand(String userId, Direction direction) {
+        return new Command(CommandType.INPUT, new InputCommandData(userId, direction));
     }
 }

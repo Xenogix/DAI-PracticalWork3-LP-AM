@@ -1,4 +1,4 @@
-package ch.heigvd.data.commands;
+package ch.heigvd.data.commands.data;
 
 import ch.heigvd.data.models.Game;
 

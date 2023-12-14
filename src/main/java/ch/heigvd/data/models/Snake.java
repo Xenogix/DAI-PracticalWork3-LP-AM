@@ -1,18 +1,39 @@
 package ch.heigvd.data.models;
 
-public class Snake {
-    private String userId;
-    private String username;
-    private Color color;
-    private Point position;
-    private int length;
-    private Direction direction;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public Snake(String userId, String username, Point position, Color color) {
+public class Snake {
+    @JsonProperty("id")
+    private String userId;
+    @JsonProperty("username")
+    private String username;
+    @JsonProperty("position")
+    private Point headPosition;
+    @JsonProperty("color")
+    private Color color;
+    @JsonProperty("direction")
+    private Direction direction;
+    private int length;
+
+    public Snake(String userId, String username, Point headPosition, Color color) {
         this.userId = userId;
-        this.position = position;
+        this.headPosition = headPosition;
         this.username = username;
-        this.color = Color.Blue;
+        this.color = color;
+    }
+
+    @JsonCreator
+    public Snake(@JsonProperty("id") String userId,
+                 @JsonProperty("username") String username,
+                 @JsonProperty("position") Point position,
+                 @JsonProperty("color") Color color,
+                 @JsonProperty("direction") Direction direction) {
+        this.userId = userId;
+        this.username = username;
+        this.headPosition = position;
+        this.color = color;
+        this.direction = direction;
     }
 
     public String getUserId(){
@@ -24,11 +45,11 @@ public class Snake {
     public Color getColor() {
         return color;
     }
-    public Point getPosition() {
-        return position;
+    public Point getHeadPosition() {
+        return headPosition;
     }
-    public void setPosition(Point position) {
-        this.position = position;
+    public void setHeadPosition(Point headPosition) {
+        this.headPosition = headPosition;
     }
     public int getLength() {
         return length;

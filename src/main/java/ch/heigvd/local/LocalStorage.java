@@ -1,6 +1,6 @@
 package ch.heigvd.local;
 
-import ch.heigvd.data.rules.GameEngine;
+import ch.heigvd.data.game.GameEngine;
 
 class LocalStorage {
     private static LocalStorage instance;
