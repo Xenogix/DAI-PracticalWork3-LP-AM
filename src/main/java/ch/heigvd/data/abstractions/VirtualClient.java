@@ -4,6 +4,6 @@ import ch.heigvd.data.commands.Command;
 
 import java.io.IOException;
 
-public interface ServerVirtualEndpoint {
-    void send(Command clientCommand) throws IOException;
+public interface VirtualClient {
+    Command send(Command command) throws IOException;
 }

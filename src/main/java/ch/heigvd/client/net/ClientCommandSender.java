@@ -1,6 +1,6 @@
 package ch.heigvd.client.net;
 
-import ch.heigvd.data.abstractions.ClientVirtualEndpoint;
+import ch.heigvd.data.abstractions.VirtualClient;
 import ch.heigvd.data.commands.Command;
 import ch.heigvd.data.converter.CommandSerializer;
 
@@ -10,25 +10,24 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-public class ClientCommandEndpoint implements ClientVirtualEndpoint {
-    public final static short LISTENER_PORT = 32451;
+public class ClientCommandSender implements VirtualClient {
     private final String serverAddress;
     private final int serverPort;
 
-    public ClientCommandEndpoint(String serverAddress, int serverPort) {
+    public ClientCommandSender(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
     }
 
     @Override
-    public Command send(Command clientCommand) throws IOException {
+    public Command send(Command command) throws IOException {
 
-        if(clientCommand == null) return null;
+        if(command == null) return null;
 
         //Server socket creation
-        try(DatagramSocket serverSocket = new DatagramSocket(LISTENER_PORT)){
+        try(DatagramSocket serverSocket = new DatagramSocket()){
 
-            byte[] clientCommandData = CommandSerializer.serialize(clientCommand);
+            byte[] clientCommandData = CommandSerializer.serialize(command);
             InetAddress serverInetAddress = InetAddress.getByName(serverAddress);
             DatagramPacket sendPacket = new DatagramPacket(clientCommandData, clientCommandData.length,serverInetAddress , serverPort);
             serverSocket.send(sendPacket);

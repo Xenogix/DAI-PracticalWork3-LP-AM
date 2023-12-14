@@ -1,6 +1,7 @@
 package ch.heigvd.data.converter;
 
 import ch.heigvd.data.commands.*;
+import ch.heigvd.data.commands.data.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
