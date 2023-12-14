@@ -1,8 +1,8 @@
 package ch.heigvd.server;
 
-import ch.heigvd.data.rules.GameEngine;
+import ch.heigvd.data.game.GameEngine;
 
-class ServerStorage {
+public class ServerStorage {
     private static ServerStorage instance;
     private final GameEngine game = new GameEngine();
 

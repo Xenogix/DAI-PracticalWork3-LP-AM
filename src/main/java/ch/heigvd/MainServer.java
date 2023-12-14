@@ -1,46 +1,62 @@
 package ch.heigvd;
 
-import ch.heigvd.data.abstractions.ResponseCommandHandler;
-import ch.heigvd.data.commands.Command;
-import ch.heigvd.data.commands.CommandFactory;
-import ch.heigvd.data.commands.data.AcceptCommandData;
+import ch.heigvd.data.abstractions.GameUpdateListener;
+import ch.heigvd.data.abstractions.VirtualServer;
 import ch.heigvd.data.models.Game;
+import ch.heigvd.server.ServerStorage;
 import ch.heigvd.server.commands.ServerCommandHandler;
 import ch.heigvd.server.net.ServerCommandEndpoint;
 import ch.heigvd.server.net.ServerUpdateSender;
 
-import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MainServer {
-    public static void main(String[] args){
-        startTestMulticast();
-    }
+    private static final String UPDATE_ADDRESS = "224.12.17.11";
+    private static final int UPDATE_PORT = 3433;
+    private static final int SERVER_PORT = 3432;
+    public static void main(String[] args) {
 
-    private static void startTestMulticast() {
-        ServerUpdateSender sender = new ServerUpdateSender("224.12.17.11", 3432);
+        // Initiate the unicast server
+        ServerCommandHandler commandHandler = new ServerCommandHandler();
+        ServerCommandEndpoint testServer = new ServerCommandEndpoint(SERVER_PORT, commandHandler);
 
-        while(true) {
-            sender.send(new Game());
+        // Initiate the multicast server and event handling
+        ServerStorage storage = ServerStorage.getInstance();
+        ServerUpdateSender sender = new ServerUpdateSender(UPDATE_ADDRESS, UPDATE_PORT);
+        GameUpdateListener gameUpdateListener = new DummyGameUpdateListener(sender);
+        storage.getGameEngine().addListner(gameUpdateListener);
 
-            try {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException ex) {
+        // Start threads
+        Thread endpointThread = new Thread(testServer);
+        Thread gameThread = new Thread(storage.getGameEngine());
+        endpointThread.start();
+        gameThread.start();
 
-            }
+        try {
+            endpointThread.join();
+            gameThread.join();
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
-    public static void startTestUnitcast() {
-        ResponseCommandHandler handler = new ResponseCommandHandler() {
-            @Override
-            public Command handle(Command command) {
-                String userId = UUID.randomUUID().toString();
-                return CommandFactory.getAcceptCommand(userId);
-            }
-        };
+    private static class DummyGameUpdateListener implements GameUpdateListener {
+        private final ServerUpdateSender updateSender;
+        private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+        private Future<?> updateTask;
 
-        ServerCommandEndpoint testServer = new ServerCommandEndpoint(12643, handler);
-        testServer.start();
+        public DummyGameUpdateListener(ServerUpdateSender updateSender) {
+            this.updateSender = updateSender;
+        }
+
+        @Override
+        public void gameUpdated(Game game) {
+            if (updateTask == null || updateTask.isDone()) {
+                updateTask = executorService.submit(() -> updateSender.send(game));
+            }
+        }
     }
 }

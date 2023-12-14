@@ -2,15 +2,14 @@ package ch.heigvd.server.net;
 
 import ch.heigvd.data.abstractions.ResponseCommandHandler;
 import ch.heigvd.data.commands.Command;
-import ch.heigvd.data.abstractions.ServerVirtualEndpoint;
+import ch.heigvd.data.abstractions.VirtualServer;
 import ch.heigvd.data.converter.CommandSerializer;
-import ch.heigvd.server.commands.ServerCommandHandler;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-public class CommandResponder implements Runnable, ServerVirtualEndpoint {
+public class CommandResponder implements Runnable, VirtualServer {
     private final DatagramPacket packet;
     private final DatagramSocket socket;
     private final ResponseCommandHandler commandHandler;

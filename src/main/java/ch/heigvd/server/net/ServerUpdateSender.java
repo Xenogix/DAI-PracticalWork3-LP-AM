@@ -9,20 +9,20 @@ import java.io.IOException;
 import java.net.*;
 
 public class ServerUpdateSender {
-    private final String serverAddress;
-    private final int serverPort;
+    private final String multicastAddress;
+    private final int multicastPort;
 
-    public ServerUpdateSender(String serverAddress, int serverPort) {
-        this.serverAddress = serverAddress;
-        this.serverPort = serverPort;
+    public ServerUpdateSender(String multicastAddress, int multicastPort) {
+        this.multicastAddress = multicastAddress;
+        this.multicastPort = multicastPort;
     }
 
     public void send(Game game){
 
         try(DatagramSocket socket = new DatagramSocket()){
 
-            InetAddress multicastAddress = InetAddress.getByName(serverAddress);
-            InetSocketAddress group = new InetSocketAddress(multicastAddress, serverPort);
+            InetAddress multicastAddress = InetAddress.getByName(this.multicastAddress);
+            InetSocketAddress group = new InetSocketAddress(multicastAddress, multicastPort);
 
             try{
                 Command commandToSend = CommandFactory.getUpdateCommand(game);

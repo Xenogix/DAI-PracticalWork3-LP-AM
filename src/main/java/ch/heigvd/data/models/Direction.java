@@ -1,8 +1,8 @@
 package ch.heigvd.data.models;
 
 public enum Direction {
-    TOP,
-    BOTTOM,
+    UP,
+    DOWN,
     LEFT,
     RIGHT,
 }

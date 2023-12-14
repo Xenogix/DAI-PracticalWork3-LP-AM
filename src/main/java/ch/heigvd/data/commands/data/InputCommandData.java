@@ -1,7 +1,7 @@
 package ch.heigvd.data.commands.data;
 
-import ch.heigvd.data.models.Input;
+import ch.heigvd.data.models.Direction;
 
-public record InputCommandData(String userId, Input input) {
+public record InputCommandData(String userId, Direction direction) {
 
 }
