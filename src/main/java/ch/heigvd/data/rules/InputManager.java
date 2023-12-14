@@ -1,6 +1,6 @@
-package ch.heigvd.shared.rules;
+package ch.heigvd.data.rules;
 
-import ch.heigvd.shared.models.Input;
+import ch.heigvd.data.models.Input;
 
 public class InputManager {
     private final GameEngine gameEngine;
