@@ -1,14 +1,11 @@
 package ch.heigvd.client;
 
-import ch.heigvd.shared.models.Game;
+import ch.heigvd.data.models.Game;
 
-public class ClientStorage {
+class ClientStorage {
     private static ClientStorage instance;
-    private final Game game = new Game();
-    private String clientId;
-    private String serverAddress ;
-
-    private short serverPort;
+    private String userId;
+    private Game game;
 
     private ClientStorage() {
 
@@ -17,36 +14,19 @@ public class ClientStorage {
     public static synchronized ClientStorage getInstance() {
         if(instance == null)
             instance = new ClientStorage();
-
         return  instance;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
     public Game getGame() {
         return game;
     }
-
-    public String getClientId() {
-        return clientId;
+    public void setGame(Game game) {
+        this.game = game;
     }
-    public void setClientId(String clientId){
-        this.clientId = clientId;
-    }
-
-    public String getServerAddress(){
-        return this.serverAddress;
-    }
-
-    public void setServerAddress(String serverAddress){
-        this.serverAddress = serverAddress;
-    }
-
-    public short getServerPort() {
-        return serverPort;
-    }
-
-    public void setServerPort(short serverPort) {
-        this.serverPort = serverPort;
-    }
-
-
 }
