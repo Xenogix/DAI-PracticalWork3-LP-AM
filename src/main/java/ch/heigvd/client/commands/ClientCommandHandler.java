@@ -1,10 +1,11 @@
 package ch.heigvd.client.commands;
 
-import ch.heigvd.server.commands.ServerCommand;
+import ch.heigvd.data.abstractions.CommandHandler;
+import ch.heigvd.data.commands.Command;
 
-public class ClientCommandHandler {
-
-    public void handle(ServerCommand serverCommand){
+public class ClientCommandHandler implements CommandHandler {
+    @Override
+    public void handle(Command serverCommand){
         //Accept
 
         //Refuse
