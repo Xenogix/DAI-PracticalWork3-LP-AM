@@ -2,7 +2,7 @@ package ch.heigvd.client;
 
 import ch.heigvd.data.models.Game;
 
-class ClientStorage {
+public class ClientStorage {
     private static ClientStorage instance;
     private String userId;
     private Game game;

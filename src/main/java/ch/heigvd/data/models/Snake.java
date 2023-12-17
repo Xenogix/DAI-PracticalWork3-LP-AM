@@ -14,7 +14,13 @@ public class Snake {
     private Color color;
     @JsonProperty("direction")
     private Direction direction;
+    @JsonProperty("body")
+    private Point[] body;
+    @JsonProperty("length")
     private int length;
+
+    //maximum depending of the size of the panel - todo maybe clear that cause now it's ugly
+    private final int MAX_LENGTH = 600*600 / 25;
 
     public Snake(String userId, String username, Point headPosition, Color color) {
         this.userId = userId;
@@ -28,12 +34,16 @@ public class Snake {
                  @JsonProperty("username") String username,
                  @JsonProperty("position") Point position,
                  @JsonProperty("color") Color color,
-                 @JsonProperty("direction") Direction direction) {
+                 @JsonProperty("direction") Direction direction,
+                 @JsonProperty("body") Point[] body,
+                 @JsonProperty("length") int length){
         this.userId = userId;
         this.username = username;
         this.headPosition = position;
         this.color = color;
         this.direction = direction;
+        this.body = body;
+        this.length = length;
     }
 
     public String getUserId(){
@@ -62,5 +72,13 @@ public class Snake {
     }
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+    public Point[] getBody() { return body; }
+    public void setBody(Point[] body) { this.body = body; }
+
+    public void setSnakeDead(){
+        setBody(null);
+        setLength(0);
+        setHeadPosition(null);
     }
 }
