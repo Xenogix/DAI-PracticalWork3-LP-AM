@@ -1,4 +1,4 @@
-package ch.heigvd.shared.gui;
+package ch.heigvd.gui;
 
 import ch.heigvd.data.abstractions.VirtualClient;
 
