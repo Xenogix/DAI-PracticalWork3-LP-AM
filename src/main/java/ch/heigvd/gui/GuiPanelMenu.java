@@ -1,5 +1,8 @@
 package ch.heigvd.gui;
 
+import ch.heigvd.client.ClientStorage;
+import ch.heigvd.client.net.ClientCommandSender;
+import ch.heigvd.client.net.ClientUpdateEndpoint;
 import ch.heigvd.data.abstractions.VirtualClient;
 import ch.heigvd.data.commands.CommandFactory;
 import ch.heigvd.data.models.Color;
@@ -14,28 +17,30 @@ import java.util.Objects;
 
 public class GuiPanelMenu extends JPanel {
 
-    private JTextField multicastIP;
-    private JTextField serverIP;
-    private JComboBox<String> colorSelector;
-    private JButton joinButton;
-    private VirtualClient virtualClient;
-    private GuiFrame guiFrame;
+    private final JTextField userName,multicastIP, serverIP, serverPort, multicastPort;
+    private final JComboBox<Color> colorSelector;
+    private final JButton joinButton;
+    private final GuiFrame guiFrame;
+    private final ClientStorage storage = ClientStorage.getInstance();
 
-    public GuiPanelMenu(VirtualClient virtualClient, GuiFrame guiFrame){
-        this.virtualClient = virtualClient;
+    public GuiPanelMenu(GuiFrame guiFrame){
         this.guiFrame = guiFrame;
 
         setLayout(new GridLayout(4,1));
 
         //Server and multicast IPs
+        userName = new JTextField("Username");
         serverIP = new JTextField("IP server");
         multicastIP = new JTextField("IP multicat");
+        serverPort = new JTextField("Server port");
+        multicastPort = new JTextField("Multicast port");
         add(serverIP);
+        add(serverPort);
         add(multicastIP);
+        add(multicastPort);
 
         //Color selector
-        String[] colors = {"Yellow", "Red", "Blue", "Green", "Brown"};
-        colorSelector = new JComboBox<>(colors);
+        colorSelector = new JComboBox<>(Color.values());
         add(colorSelector);
 
         // Join button
@@ -53,24 +58,31 @@ public class GuiPanelMenu extends JPanel {
     public void joinGame(){
         String multCastIP = multicastIP.getText().trim();
         String servIP = serverIP.getText().trim();
-        String selectedColor = (String) colorSelector.getSelectedItem();
-        Color color = null;
 
-        switch(Objects.requireNonNull(selectedColor)){
-            case "Red" -> color = Color.Red;
-            case "Blue" -> color = Color.Blue;
-            case "Yellow" -> color = Color.Yellow;
-            case "Green" -> color = Color.Green;
-            case "Brown" -> color = Color.Brown;
+        try {
+            int multPort = Integer.parseInt(multicastPort.getText().trim());
+            int servPort = Integer.parseInt(serverPort.getText().trim());
+
+            //virtual client set IPs and Ports for server and multicast
+            storage.setUpdateEndpoint(new ClientUpdateEndpoint(multCastIP, multPort, guiFrame.getGamePanel()));
+            storage.setVirtualClient(new ClientCommandSender(servIP, servPort));
+        }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "The port should be a number between 1024 and 65535");
+            return;
         }
 
-        //todo get the right number for the multicast ip and server ip
-        if(servIP.equals("1.1.1.1") && multCastIP.equals("1.1.1.1") && color != null){
+        Color selectedColor = (Color)colorSelector.getSelectedItem();
+
+        //Send command if a color is selected and there's a username
+        if(selectedColor != null && !userName.getText().trim().isEmpty()){
             try {
-                virtualClient.send(CommandFactory.getJoinCommand("test", color));
+                storage.getVirtualClient().send(CommandFactory.getJoinCommand(userName.getText().trim(), selectedColor));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
+
+        guiFrame.showGamePanel();
     }
 }

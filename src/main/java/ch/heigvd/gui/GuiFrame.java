@@ -7,20 +7,16 @@ import java.awt.*;
 
 public class GuiFrame extends JFrame {
 
-    private VirtualClient virtualClient;
     private CardLayout cardLayout;
     private JPanel mainPanel;
-    private GuiPanelGame gamePanel;
-    private GuiPanelMenu menuPanel;
+    public GuiPanelGame gamePanel;
+    public GuiPanelMenu menuPanel;
 
-
-    public GuiFrame(VirtualClient virtualClient){
-        this.virtualClient = virtualClient;
-
+    public GuiFrame(){
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
-        menuPanel = new GuiPanelMenu(this.virtualClient, this);
-        gamePanel = new GuiPanelGame(this.virtualClient);
+        menuPanel = new GuiPanelMenu(this);
+        gamePanel = new GuiPanelGame();
 
         mainPanel.add(menuPanel, "Menu");
         mainPanel.add(gamePanel, "Game");
@@ -41,9 +37,16 @@ public class GuiFrame extends JFrame {
         this.setLocationRelativeTo(null);
     }
 
+    public GuiPanelGame getGamePanel() {
+        return gamePanel;
+    }
+
+    public GuiPanelMenu getMenuPanel() {
+        return menuPanel;
+    }
+
     //method to switch to the game panel
     public void showGamePanel(){
         cardLayout.show(mainPanel, "Game");
     }
-
 }

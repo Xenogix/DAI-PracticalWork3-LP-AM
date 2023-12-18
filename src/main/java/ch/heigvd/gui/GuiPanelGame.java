@@ -1,8 +1,12 @@
 package ch.heigvd.gui;
 
 import ch.heigvd.client.ClientStorage;
+import ch.heigvd.data.abstractions.CommandHandler;
 import ch.heigvd.data.abstractions.VirtualClient;
+import ch.heigvd.data.commands.Command;
 import ch.heigvd.data.commands.CommandFactory;
+import ch.heigvd.data.commands.CommandType;
+import ch.heigvd.data.commands.data.UpdateCommandData;
 import ch.heigvd.data.models.Direction;
 import ch.heigvd.data.models.Game;
 import ch.heigvd.data.models.Snake;
@@ -14,36 +18,28 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-public class GuiPanelGame extends JPanel implements ActionListener {
+public class GuiPanelGame extends JPanel implements ActionListener, CommandHandler {
 
     //Board properties
     private final int SCREEN_WIDTH = 600;
     private final int SCREEN_HEIGHT = 600;
     private final int UNIT_SIZE = 25;
-    private final int GAME_UNIT = (SCREEN_HEIGHT*SCREEN_WIDTH) /UNIT_SIZE;
+    private Game currentGame = null;
 
-    private final int DELAY = 75;
-
-    Timer timer;
-    Random random;
-    private final VirtualClient virtualClient;
-
-    public GuiPanelGame(VirtualClient virtualClient){
-        this.virtualClient = virtualClient;
+    public GuiPanelGame(){
         initBoard();
     }
 
     public void initBoard() {
-        random = new Random();
         setBackground(Color.BLACK);
         setFocusable(true); //Need the focus to receive the command probably useless cause in manage elsewhere
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 
         addKeyListener(new MyKeyAdapter());
-
-        //startGame();
     }
 
     public void paintComponents(Graphics graphics){
@@ -53,24 +49,25 @@ public class GuiPanelGame extends JPanel implements ActionListener {
 
     public void draw(Graphics graphics){
 
+        // Return if no game is set
+        if(currentGame == null) return;
+
         //Draw lines to see the squares
         for(int i = 0; i < SCREEN_HEIGHT/UNIT_SIZE; ++i){
             graphics.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, SCREEN_HEIGHT);
             graphics.drawLine(0, i*UNIT_SIZE, SCREEN_WIDTH, i*UNIT_SIZE);
         }
 
-        Game game = ClientStorage.getInstance().getGame();
-
         //Draw apples
         graphics.setColor(Color.red);
-        for(int i = 0; i < game.getApples().size(); ++i){
-            graphics.drawOval(game.getApples().get(i).getPosition().getX(),
-                              game.getApples().get(i).getPosition().getY(), UNIT_SIZE, UNIT_SIZE);
+        for(int i = 0; i < currentGame.getApples().size(); ++i){
+            graphics.drawOval(currentGame.getApples().get(i).getPosition().getX(),
+                    currentGame.getApples().get(i).getPosition().getY(), UNIT_SIZE, UNIT_SIZE);
         }
 
         //Draw snakes
-        for(int i = 0; i< game.getSnakes().size(); ++i){
-            ch.heigvd.data.models.Color snakeColor = game.getSnakes().get(i).getColor();
+        for(int i = 0; i< currentGame.getSnakes().size(); ++i){
+            ch.heigvd.data.models.Color snakeColor = currentGame.getSnakes().get(i).getColor();
             Color jPanelColor;
             switch(snakeColor){
                 case Red -> jPanelColor = Color.red;
@@ -81,10 +78,17 @@ public class GuiPanelGame extends JPanel implements ActionListener {
                 default -> jPanelColor = Color.white;
             }
             graphics.setColor(jPanelColor);
-            for(int j = 0; j < game.getSnakes().get(i).getLength(); ++j){
-                graphics.fillRect(game.getSnakes().get(i).getBody()[j].getX(), game.getSnakes().get(i).getBody()[i].getY(), UNIT_SIZE, UNIT_SIZE);
+            for(int j = 0; j < currentGame.getSnakes().get(i).getLength(); ++j){
+                graphics.fillRect(currentGame.getSnakes().get(i).getBody()[j].getX(), currentGame.getSnakes().get(i).getBody()[i].getY(), UNIT_SIZE, UNIT_SIZE);
             }
         }
+    }
+
+    @Override
+    public void handle(Command command) {
+        if(command.getCommandType() != CommandType.UPDATE) return;
+        currentGame = ((UpdateCommandData)command.getValue()).game();
+        this.paintComponents(this.getGraphics());
     }
 
     @Override
@@ -93,55 +97,47 @@ public class GuiPanelGame extends JPanel implements ActionListener {
     }
 
     public class MyKeyAdapter extends KeyAdapter {
-        Direction direction;
-        String userId = ClientStorage.getInstance().getUserId();
-        Game game = ClientStorage.getInstance().getGame();
-
-        //todo i dont understand why this doesnt work ...
-        for(Snake snake : game.getSnakes()){
-            if(snake.equals(userId))
-                direction = snake.getDirection();
-        }
+        private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+        private Future<?> updateTask;
+        private final ClientStorage storage = ClientStorage.getInstance();
 
         @Override
         public void keyPressed(KeyEvent e){
+
+            String userId = ClientStorage.getInstance().getUserId();
+            Direction actualDirection = null;
+
+            for(Snake snake : currentGame.getSnakes()){
+                if(snake.getUserId().equals(userId))
+                    actualDirection = snake.getDirection();
+            }
+
+            Direction selectedDirection = null;
             switch(e.getKeyCode()){
-                case KeyEvent.VK_LEFT :
-                    if(!direction.equals(Direction.LEFT)){
-                        try {
-                            virtualClient.send(CommandFactory.getInputCommand(userId, Direction.LEFT));
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
+                case KeyEvent.VK_LEFT -> selectedDirection = Direction.LEFT;
+                case KeyEvent.VK_RIGHT -> selectedDirection = Direction.RIGHT;
+                case KeyEvent.VK_UP -> selectedDirection = Direction.UP;
+                case KeyEvent.VK_DOWN -> selectedDirection = Direction.DOWN;
+                default -> { return; }
+            }
+
+            if(selectedDirection != actualDirection)
+                sendDirection(selectedDirection);
+        }
+
+        public void sendDirection(Direction direction) {
+            if (updateTask == null || updateTask.isDone()) {
+                updateTask = executorService.submit(() -> {
+                    try {
+                        String userId = ClientStorage.getInstance().getUserId();
+                        VirtualClient client = storage.getVirtualClient();
+                        if(client == null) return;
+                        client.send(CommandFactory.getInputCommand(userId, Direction.LEFT));
                     }
-                    break;
-                case KeyEvent.VK_RIGHT:
-                    if(!direction.equals(Direction.RIGHT)){
-                        try {
-                            virtualClient.send(CommandFactory.getInputCommand(userId, Direction.RIGHT));
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
+                    catch (IOException ex) {
+                        // Ignore
                     }
-                    break;
-                case KeyEvent.VK_UP:
-                    if(!direction.equals(Direction.UP)){
-                        try {
-                            virtualClient.send(CommandFactory.getInputCommand(userId, Direction.UP));
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    }
-                    break;
-                case KeyEvent.VK_DOWN:
-                    if(!direction.equals(Direction.DOWN)){
-                        try {
-                            virtualClient.send(CommandFactory.getInputCommand(userId, Direction.DOWN));
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    }
-                    break;
+                });
             }
         }
     }

@@ -13,7 +13,9 @@ import ch.heigvd.data.models.Color;
 import ch.heigvd.data.models.Direction;
 import ch.heigvd.data.models.Game;
 import ch.heigvd.data.models.Snake;
+import ch.heigvd.gui.GuiFrame;
 
+import javax.swing.*;
 import java.util.Random;
 
 public class MainClient {
@@ -25,18 +27,9 @@ public class MainClient {
     private static final Random RANDOM = new Random();
 
     public static void main(String[] args) {
-
-        // Create the endpoint and command sender
-        CommandHandler updateHandler = new DummyUpdateHandler();
-        ClientUpdateEndpoint endpoint = new ClientUpdateEndpoint(UPDATE_ADDRESS, UPDATE_PORT, updateHandler);
-        VirtualClient commandSender = new ClientCommandSender(SERVER_ADDRESS, SERVER_PORT);
-
-        // Start listening updates
-        Thread endpointThread = new Thread(endpoint);
-        endpointThread.start();
-
-        // Start dummy client inputs
-        StartDummyInput(commandSender);
+        // Start a new JFrame
+        JFrame frame = new GuiFrame();
+        frame.setVisible(true);
     }
 
     static void StartDummyInput(VirtualClient virtualClient) {
