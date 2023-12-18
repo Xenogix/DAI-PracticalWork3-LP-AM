@@ -9,13 +9,15 @@ public class CommandFactory {
     public static Command getAcceptCommand(String userId) {
         return new Command(CommandType.ACCEPT, new AcceptCommandData(userId));
     }
+    public static Command getAcknowledgeCommand() {
+        return new Command(CommandType.ACKNOWLEDGE, new AcknowledgeCommandData());
+    }
     public static Command getRefuseCommand(String message) {
         return new Command(CommandType.REFUSE, new RefuseCommandData(message));
     }
     public static Command getUpdateCommand(Game game) {
         return new Command(CommandType.UPDATE, new UpdateCommandData(game));
     }
-
     public static Command getJoinCommand(String username, Color snakeColor) {
         return new Command(CommandType.JOIN, new JoinCommandData(username, snakeColor));
     }
