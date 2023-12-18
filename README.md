@@ -62,9 +62,19 @@ The main object is the command object that has the following structure :
 
 ### Global Diagram
 
-### Join & Input - Unicast
+### UPD
 
-### Update game - Multicast
+<u>Overview</u>
+
+To create this application, we were instructed to use UDP protocol in both multicast and unicast modes. To achieve this, we decided to communicate via UDP unicast to establish the connection between the client and the server, and from that point, to connect to the game. For transmitting the game state, the server sends information over a multicast channel, which is joined by the clients.
+
+<u>Join & Input - Unicast</u>
+
+The ServerCommandEndpoint and ClientCommandSender classes in this application play crucial roles in handling network communication between the server and clients using the UDP protocol. The ServerCommandEndpoint, running on the server side, listens on a specific port for incoming UDP packets. Upon receiving a packet, it initiates a new thread using CommandResponder to process the command contained in the packet. This design allows for concurrent handling of multiple client requests, enhancing the server's ability to manage simultaneous commands. On the client side, ClientCommandSender implements the VirtualClient interface to facilitate sending commands to the server. It serializes command objects into byte data, sends them to the server via UDP packets, and waits for a response. This response is then deserialized back into a command object, providing a seamless and efficient communication mechanism between the client and the server. This architecture ensures a reliable and scalable way of handling network communication in the multiplayer game environment.
+
+<u>Update game - Multicast</u>
+
+In the multiplayer snake game, the ClientUpdateEndpoint and ServerUpdateSender classes play pivotal roles in handling real-time game updates using UDP multicast. The ClientUpdateEndpoint, part of the client-side architecture, subscribes to a multicast group identified by a specific address and port. It continuously listens for incoming data packets on this multicast channel. Upon receiving a packet, it deserializes the command contained within and processes it using the clientCommandHandler. This mechanism allows all clients in the multicast group to receive and process game state updates simultaneously. Conversely, the ServerUpdateSender functions on the server-side, broadcasting game state updates to all clients. It serializes the game state into a command using CommandFactory and CommandSerializer, then sends this data to the multicast group address. This approach ensures efficient and synchronized state management among all participants in the game, providing a consistent and real-time multiplayer experience.
 
 ## Game Engine
 
