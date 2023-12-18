@@ -41,18 +41,93 @@ The parameter's formats will be described in the next paragraph.
 ### Data format
 
 The data is sent as json through the network as it allows transmitting heterogeneous objects through the network.
+
 The main object is the command object that has the following structure :
 
 ```json
-
 {
   "commandType": "<COMMAND TYPE>",
-  "value":{
-    
+  "value": {
+    "<field1>": "<value1>",
+    "<field2>": "<value1>",
+    "<field3>": "<value1>"
   }
 }
-
 ```
+
+The command types allow identifying how to process the given data.
+
+The list of command data and their structure follows :
+
+#### JOIN data
+
+```json
+{
+  "username": "<username>",
+  "snakeColor": "<color>"
+}
+```
+
+There is no standardized way of displaying color, and the color information interpretation is subject to variations.
+
+The available color identifiers can be found in the following list :
+
+- RED
+- BLUE
+- GREEN
+- YELLOW
+- BROWN
+
+#### INPUT data
+
+```json
+{
+  "userId": "<user id>",
+  "direction": "<input>"
+}
+```
+
+UserId corresponds to the client personal identifier. 
+If a "JOIN" command succeeds, a player id will be given in response through an "ACCEPT" command.
+This identifier should be stored and used in these commands as this allows the server to identify the snake to update.
+
+The available input identifiers can be found in the following list :
+
+- UP
+- DOWN
+- LEFT
+- RIGHT
+- 
+#### ACCEPT data
+
+```json
+{
+  "userId": "<user id>"
+}
+```
+
+The ACCEPT data contains the user id that should be used in the INPUT command.
+It follows a successful JOIN command
+
+#### ACKNOWLEDGE data
+
+```json
+{
+}
+```
+
+The ACKNOWLEDGE data is empty as the ACKNOWLEDGE command is simply used to notify a client that the sent INPUT command was successfully processed.
+
+#### REFUSE data
+
+```json
+{
+  "message": "<error message>"
+}
+```
+
+The REFUSE contains an error message that follows any client command that was not processed successfully.
+There are no predefined messages that should be sent and any server could send its own to notify an error to the client.
 
 ### Error Handling
 

@@ -9,6 +9,7 @@ import ch.heigvd.data.commands.CommandFactory;
 import ch.heigvd.data.commands.CommandType;
 import ch.heigvd.data.commands.data.AcceptCommandData;
 import ch.heigvd.data.commands.data.UpdateCommandData;
+import ch.heigvd.data.converter.CommandSerializer;
 import ch.heigvd.data.models.Color;
 import ch.heigvd.data.models.Direction;
 import ch.heigvd.data.models.Game;
@@ -50,9 +51,13 @@ public class MainClient {
                  Color color = colors[RANDOM.nextInt(colors.length)];
                  Direction input = directions[RANDOM.nextInt(directions.length)];
                  Command recievedCommand = virtualClient.send(CommandFactory.getJoinCommand(username, color));
+                 System.out.println(new String(CommandSerializer.serialize(CommandFactory.getJoinCommand(username, color))));
+                 System.out.println(new String(CommandSerializer.serialize(recievedCommand)));
                  if (recievedCommand.getCommandType() == CommandType.ACCEPT) {
                      AcceptCommandData data = (AcceptCommandData) recievedCommand.getValue();
-                     virtualClient.send(CommandFactory.getInputCommand(data.userId(), input));
+                     Command ackCommand = virtualClient.send(CommandFactory.getInputCommand(data.userId(), input));
+                     System.out.println(new String(CommandSerializer.serialize(CommandFactory.getInputCommand(data.userId(), input))));
+                     System.out.println(new String(CommandSerializer.serialize(ackCommand)));
                  }
 
                  callCount++;
