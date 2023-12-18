@@ -1,6 +1,8 @@
 package ch.heigvd.server.net;
 
 import ch.heigvd.data.abstractions.ResponseCommandHandler;
+import ch.heigvd.data.logs.LogLevel;
+import ch.heigvd.data.logs.Logger;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -19,6 +21,7 @@ public class ServerCommandEndpoint implements Runnable {
 
     @Override
     public void run(){
+        Logger.log(String.format("Server started on port %s", serverPort), this, LogLevel.Information);
         isRunning = true;
         try(DatagramSocket socket = new DatagramSocket(serverPort)){
             byte[] data = new byte[PACKET_SIZE];
@@ -28,7 +31,7 @@ public class ServerCommandEndpoint implements Runnable {
                 new Thread(new CommandResponder(packet, socket, commandHandler)).start();
             }
         }catch (Exception e){
-
+            Logger.log(String.format("The server encountered an error : %s", serverPort), this, LogLevel.Information);
         }
     }
 

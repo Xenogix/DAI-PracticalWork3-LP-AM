@@ -5,5 +5,6 @@ public enum CommandType {
     INPUT,
     UPDATE,
     ACCEPT,
+    ACKNOWLEDGE,
     REFUSE,
 }
