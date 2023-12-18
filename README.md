@@ -59,6 +59,7 @@ The command types allow identifying how to process the given data.
 
 The list of command data and their structure follows :
 
+
 #### JOIN data
 
 ```json
@@ -68,7 +69,7 @@ The list of command data and their structure follows :
 }
 ```
 
-There is no standardized way of displaying color, and the color information interpretation is subject to variations.
+There is no standardized way of displaying color, and the color interpretation is subject to variations.
 
 The available color identifiers can be found in the following list :
 
@@ -77,6 +78,7 @@ The available color identifiers can be found in the following list :
 - GREEN
 - YELLOW
 - BROWN
+
 
 #### INPUT data
 
@@ -97,7 +99,8 @@ The available input identifiers can be found in the following list :
 - DOWN
 - LEFT
 - RIGHT
-- 
+
+
 #### ACCEPT data
 
 ```json
@@ -109,6 +112,7 @@ The available input identifiers can be found in the following list :
 The ACCEPT data contains the user id that should be used in the INPUT command.
 It follows a successful JOIN command
 
+
 #### ACKNOWLEDGE data
 
 ```json
@@ -117,6 +121,7 @@ It follows a successful JOIN command
 ```
 
 The ACKNOWLEDGE data is empty as the ACKNOWLEDGE command is simply used to notify a client that the sent INPUT command was successfully processed.
+
 
 #### REFUSE data
 
