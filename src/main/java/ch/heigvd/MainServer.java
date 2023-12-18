@@ -3,6 +3,7 @@ package ch.heigvd;
 import ch.heigvd.data.abstractions.GameUpdateListener;
 import ch.heigvd.data.abstractions.ResponseCommandHandler;
 import ch.heigvd.data.abstractions.VirtualUpdateServer;
+import ch.heigvd.data.logs.Logger;
 import ch.heigvd.data.models.Game;
 import ch.heigvd.server.ServerStorage;
 import ch.heigvd.server.commands.ServerCommandHandler;
@@ -18,6 +19,9 @@ public class MainServer {
     private static final int UPDATE_PORT = 3433;
     private static final int SERVER_PORT = 3432;
     public static void main(String[] args) {
+
+        // Enable the logger
+        Logger.setEnabled();
 
         // Initiate the unicast server
         ResponseCommandHandler commandHandler = new ServerCommandHandler();

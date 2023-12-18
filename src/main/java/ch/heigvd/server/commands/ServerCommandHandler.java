@@ -27,7 +27,7 @@ public class ServerCommandHandler implements ResponseCommandHandler {
         String userId = engine.getNewSnakeID();
         boolean wasSuccessful = engine.spawnSnake(userId, data.username(), data.snakeColor());
 
-        // If the operation was successful return an accept command
+        // If the operation was successful, return an accept command
         // else return a refuse command
         if(wasSuccessful)
             return CommandFactory.getAcceptCommand(userId);
@@ -43,10 +43,10 @@ public class ServerCommandHandler implements ResponseCommandHandler {
         Direction direction = data.direction();
         if(direction != null) wasOperationSuccessful = engine.setSnakeDirection(data.userId(), direction);
 
-        // If the operation was successful return an accept command
+        // If the operation was successful, return an acknowledge command
         // else return a refuse command
         if(wasOperationSuccessful)
-            return CommandFactory.getAcceptCommand(data.userId());
+            return CommandFactory.getAcknowledgeCommand();
         else
             return CommandFactory.getRefuseCommand("Failed to process input");
     }
