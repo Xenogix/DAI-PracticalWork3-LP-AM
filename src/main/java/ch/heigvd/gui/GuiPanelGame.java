@@ -2,7 +2,6 @@ package ch.heigvd.gui;
 
 import ch.heigvd.client.ClientStorage;
 import ch.heigvd.data.abstractions.VirtualClient;
-import ch.heigvd.data.commands.Command;
 import ch.heigvd.data.commands.CommandFactory;
 import ch.heigvd.data.models.Direction;
 import ch.heigvd.data.models.Game;
@@ -17,7 +16,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.Random;
 
-public class GuiPanel extends JPanel implements ActionListener {
+public class GuiPanelGame extends JPanel implements ActionListener {
 
     //Board properties
     private final int SCREEN_WIDTH = 600;
@@ -31,7 +30,7 @@ public class GuiPanel extends JPanel implements ActionListener {
     Random random;
     private VirtualClient virtualClient;
 
-    public GuiPanel(VirtualClient virtualClient){
+    public GuiPanelGame(VirtualClient virtualClient){
         initBoard();
         this.virtualClient = virtualClient;
     }
