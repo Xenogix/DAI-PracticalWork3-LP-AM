@@ -28,11 +28,11 @@ public class GuiPanelGame extends JPanel implements ActionListener {
 
     Timer timer;
     Random random;
-    private VirtualClient virtualClient;
+    private final VirtualClient virtualClient;
 
     public GuiPanelGame(VirtualClient virtualClient){
-        initBoard();
         this.virtualClient = virtualClient;
+        initBoard();
     }
 
     public void initBoard() {
