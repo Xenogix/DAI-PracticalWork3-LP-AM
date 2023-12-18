@@ -112,6 +112,20 @@ public class GameEngine implements Runnable {
 
     private void applySnakeCollisions() {
         for(Snake snake : game.getSnakes()){
+            //Checks if snake collide with a border
+            //Checks if head collide left border
+            if(snake.getHeadPosition().getX() < 0)
+                snake.setSnakeDead();
+            //Checks if head collide with right border
+            if(snake.getHeadPosition().getX() > GAME_BOARD_SIZE)
+                snake.setSnakeDead();
+            //Checks if head collide with top border
+            if(snake.getHeadPosition().getY() < 0)
+                snake.setSnakeDead();
+            //Checks if head collide with bottom border
+            if(snake.getHeadPosition().getY() > GAME_BOARD_SIZE)
+                snake.setSnakeDead();
+
             //Checks if snake eat an apple
             for(Apple apple : game.getApples()){
                 if(snake.getHeadPosition().equals(apple.getPosition())){
