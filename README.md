@@ -398,7 +398,7 @@ Make sure you have Docker and Docker Compose installed on your machine.
 
    ```bash
    git clone https://github.com/Xenogix/DAI-PracticalWork3-LP-AM
-   cd your-repository
+   cd DAI-PracticalWork3-LP-AM
    ```
 
 2. **Build the Docker Image:**
@@ -419,29 +419,6 @@ Make sure you have Docker and Docker Compose installed on your machine.
 
 4. **Access the Snake Server:**
    The Snake Server is now running and accessible on port 3432. You can interact with it using your application or tools that communicate over UDP.
-
-### Example Docker Compose File
-
-```yaml
-version: '3.8'
-
-services:
-  snake-server:
-    image: snake_server:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3432:3432/udp"
-    networks:
-      - network
-
-networks:
-  network:
-    name: network
-```
-
-This example Docker Compose file defines a service named `snake-server` using the built image. It exposes port 3432 for UDP communication and connects to a custom network named `network`.
 
 ### Stopping the Server
 
