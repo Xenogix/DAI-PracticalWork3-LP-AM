@@ -4,15 +4,11 @@ import ch.heigvd.data.abstractions.GameUpdateListener;
 import ch.heigvd.data.abstractions.ResponseCommandHandler;
 import ch.heigvd.data.abstractions.VirtualUpdateServer;
 import ch.heigvd.data.logs.Logger;
-import ch.heigvd.data.models.Game;
 import ch.heigvd.server.ServerStorage;
 import ch.heigvd.server.commands.ServerCommandHandler;
+import ch.heigvd.server.commands.ServerUpdateListener;
 import ch.heigvd.server.net.ServerCommandEndpoint;
 import ch.heigvd.server.net.ServerUpdateSender;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class MainServer {
     private static final String UPDATE_ADDRESS = "224.12.17.11";
@@ -30,8 +26,8 @@ public class MainServer {
         // Initiate the multicast server and event handling
         ServerStorage storage = ServerStorage.getInstance();
         VirtualUpdateServer sender = new ServerUpdateSender(UPDATE_ADDRESS, UPDATE_PORT);
-        GameUpdateListener gameUpdateListener = new DummyGameUpdateListener(sender);
-        storage.getGameEngine().addListner(gameUpdateListener);
+        GameUpdateListener listener = new ServerUpdateListener(sender);
+        storage.getGameEngine().addListner(listener);
 
         // Start threads
         Thread endpointThread = new Thread(testServer);
@@ -45,23 +41,6 @@ public class MainServer {
         }
         catch (Exception ex) {
             System.out.println(ex.getMessage());
-        }
-    }
-
-    static class DummyGameUpdateListener implements GameUpdateListener {
-        private final VirtualUpdateServer updateSender;
-        private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-        private Future<?> updateTask;
-
-        public DummyGameUpdateListener(VirtualUpdateServer updateSender) {
-            this.updateSender = updateSender;
-        }
-
-        @Override
-        public void gameUpdated(Game game) {
-            if (updateTask == null || updateTask.isDone()) {
-                updateTask = executorService.submit(() -> updateSender.send(game));
-            }
         }
     }
 }

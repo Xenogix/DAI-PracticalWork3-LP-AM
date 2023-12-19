@@ -1,9 +1,14 @@
 package ch.heigvd.data.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Random;
+
 public class Snake {
+    @JsonIgnore
+    private final static Random random = new Random();
     @JsonProperty("id")
     private String userId;
     @JsonProperty("username")
@@ -19,14 +24,21 @@ public class Snake {
     @JsonProperty("length")
     private int length;
 
-    //maximum depending of the size of the panel - todo maybe clear that cause now it's ugly
-    private final int MAX_LENGTH = 600*600 / 25;
-
-    public Snake(String userId, String username, Point headPosition, Color color) {
+    public Snake(String userId, String username, Point headPosition, Color color, int length) {
         this.userId = userId;
         this.headPosition = headPosition;
         this.username = username;
         this.color = color;
+        this.length = length;
+
+        // Create the snake body
+        this.body = new Point[length];
+        for (int i = 0; i < length; ++i)
+            this.body[i] = new Point(headPosition.getX(), headPosition.getY());
+
+        // Set random direction
+        Direction[] directions = Direction.values();
+        this.direction = directions[random.nextInt(0,directions.length)];
     }
 
     @JsonCreator
@@ -64,8 +76,17 @@ public class Snake {
     public int getLength() {
         return length;
     }
-    public void setLength(int length) {
-        this.length = length;
+    public void setLength(int newLength) {
+        if(this.length == newLength || newLength < 0) return;
+        Point[] newBody = new Point[newLength];
+        for(int i = 0; i < newLength; ++i) {
+            if(i < this.length)
+                newBody[i] = body[i];
+            else
+                newBody[i] = new Point(body[length - 1]);
+        }
+        this.length = newLength;
+        this.body = newBody;
     }
     public Direction getDirection() {
         return direction;
@@ -74,11 +95,4 @@ public class Snake {
         this.direction = direction;
     }
     public Point[] getBody() { return body; }
-    public void setBody(Point[] body) { this.body = body; }
-
-    public void setSnakeDead(){
-        setBody(null);
-        setLength(0);
-        setHeadPosition(null);
-    }
 }

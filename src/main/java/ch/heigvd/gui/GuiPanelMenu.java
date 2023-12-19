@@ -4,7 +4,11 @@ import ch.heigvd.client.ClientStorage;
 import ch.heigvd.client.net.ClientCommandSender;
 import ch.heigvd.client.net.ClientUpdateEndpoint;
 import ch.heigvd.data.abstractions.VirtualClient;
+import ch.heigvd.data.commands.Command;
 import ch.heigvd.data.commands.CommandFactory;
+import ch.heigvd.data.commands.CommandType;
+import ch.heigvd.data.commands.data.AcceptCommandData;
+import ch.heigvd.data.commands.data.JoinCommandData;
 import ch.heigvd.data.models.Color;
 
 import javax.swing.*;
@@ -23,6 +27,11 @@ public class GuiPanelMenu extends JPanel {
     private final GuiFrame guiFrame;
     private final ClientStorage storage = ClientStorage.getInstance();
 
+    private static final String UPDATE_ADDRESS = "224.12.17.11";
+    private static final String SERVER_ADDRESS = "localhost";
+    private static final int UPDATE_PORT = 3433;
+    private static final int SERVER_PORT = 3432;
+
     public GuiPanelMenu(GuiFrame guiFrame){
         this.guiFrame = guiFrame;
 
@@ -30,10 +39,10 @@ public class GuiPanelMenu extends JPanel {
 
         //Server and multicast IPs
         userName = new JTextField("Username");
-        serverIP = new JTextField("IP server");
-        multicastIP = new JTextField("IP multicat");
-        serverPort = new JTextField("Server port");
-        multicastPort = new JTextField("Multicast port");
+        serverIP = new JTextField(SERVER_ADDRESS);
+        multicastIP = new JTextField(UPDATE_ADDRESS);
+        serverPort = new JTextField("3432");
+        multicastPort = new JTextField("3433");
         add(serverIP);
         add(serverPort);
         add(multicastIP);
@@ -45,12 +54,7 @@ public class GuiPanelMenu extends JPanel {
 
         // Join button
         joinButton = new JButton("Rejoindre la partie");
-        joinButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                joinGame();
-            }
-        });
+        joinButton.addActionListener(e -> joinGame());
         add(joinButton);
 
     }
@@ -77,7 +81,11 @@ public class GuiPanelMenu extends JPanel {
         //Send command if a color is selected and there's a username
         if(selectedColor != null && !userName.getText().trim().isEmpty()){
             try {
-                storage.getVirtualClient().send(CommandFactory.getJoinCommand(userName.getText().trim(), selectedColor));
+                Command command = storage.getVirtualClient().send(CommandFactory.getJoinCommand(userName.getText().trim(), selectedColor));
+
+                // Set user id
+                if(command.getCommandType() == CommandType.ACCEPT)
+                    storage.setUserId(((AcceptCommandData)command.getValue()).userId());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

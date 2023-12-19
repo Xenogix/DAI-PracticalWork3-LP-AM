@@ -31,11 +31,18 @@ public class ClientStorage {
         return updateEndpoint;
     }
     public synchronized void setUpdateEndpoint(ClientUpdateEndpoint updateEndpoint) {
-        if(updateEndpoint != null) updateEndpoint.stop();
+        stopUpdateEndpoint();
         this.updateEndpoint = updateEndpoint;
+    }
+    public synchronized void startUpdateEndpoint() {
         endpointThread = new Thread(updateEndpoint);
         endpointThread.start();
     }
+    public synchronized void stopUpdateEndpoint() {
+        if(updateEndpoint != null) updateEndpoint.stop();
+        if(this.updateEndpoint != null) endpointThread.interrupt();
+    }
+
     public synchronized VirtualClient getVirtualClient() {
         return virtualClient;
     }

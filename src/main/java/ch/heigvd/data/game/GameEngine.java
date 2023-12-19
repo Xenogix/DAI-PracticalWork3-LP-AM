@@ -3,15 +3,14 @@ package ch.heigvd.data.game;
 import ch.heigvd.data.abstractions.GameUpdateListener;
 import ch.heigvd.data.models.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class GameEngine implements Runnable {
     private static final int GAME_TPS = 10;
     private static final int MAX_PLAYER_COUNT = 10;
     private static final int GAME_BOARD_SIZE = 100; //todo checks if its the same as the ui
+    private static final int SNAKE_SPAWN_SIZE = 4;
+    private static final int APPLE_COUNT = 6;
     private final Game game = new Game(GAME_BOARD_SIZE, GAME_BOARD_SIZE);
     private final ArrayList<GameUpdateListener> gameUpdateListeners = new ArrayList<>();
     private final Random random = new Random();
@@ -62,9 +61,13 @@ public class GameEngine implements Runnable {
     public boolean spawnSnake(String snakeId, String username, Color color) {
         if(game.getSnakes().size() >= MAX_PLAYER_COUNT) return false;
         Point spawnPoint = getSpawnPoint();
-        Snake snakeToAdd = new Snake(snakeId, username, spawnPoint, color);
+        Snake snakeToAdd = new Snake(snakeId, username, spawnPoint, color, SNAKE_SPAWN_SIZE);
         game.getSnakes().add(snakeToAdd);
         return true;
+    }
+
+    public boolean killSnake(Snake snake) {
+        return game.getSnakes().remove(snake);
     }
 
     public boolean setSnakeDirection(String snakeId, Direction direction) {
@@ -85,18 +88,28 @@ public class GameEngine implements Runnable {
     private void doTick() {
         applySnakeMovement();
         applySnakeCollisions();
+        applySpawnApple();
+    }
+
+    private void applySpawnApple() {
+        while(game.getApples().size() < APPLE_COUNT) {
+            Point position = getSpawnPoint();
+            game.getApples().add(new Apple(position));
+        }
     }
 
     private void applySnakeMovement() {
-
-        for(Snake snake : game.getSnakes()){
+        List<Snake> tempSnakeCollection = new ArrayList<>(game.getSnakes());
+        for(Snake snake : tempSnakeCollection){
             if(snake.getDirection() == null) return;
 
             //move the body
-            for(int i = snake.getLength(); i > 0; --i){
-                snake.getBody()[i].setX(snake.getBody()[i-1].getX());
-                snake.getBody()[i].setY(snake.getBody()[i-1].getY());
+            for(int i = snake.getLength() - 1; i > 0; --i){
+                int x = snake.getBody()[i-1].getX();
+                int y = snake.getBody()[i-1].getY();
+                snake.getBody()[i].setPoint(new Point(x,y));
             }
+
             //move the head
             Point posHead = snake.getHeadPosition();
             switch(snake.getDirection()){
@@ -111,63 +124,65 @@ public class GameEngine implements Runnable {
     }
 
     private void applySnakeCollisions() {
-        for(Snake snake : game.getSnakes()){
+        List<Snake> tempSnakeCollection = new ArrayList<>(game.getSnakes());
+        List<Apple> tempAppleCollection = new ArrayList<>(game.getApples());
+        for(Snake snake : tempSnakeCollection){
             //Checks if snake collide with a border
             //Checks if head collide left border
             if(snake.getHeadPosition().getX() < 0)
-                snake.setSnakeDead();
+                killSnake(snake);
             //Checks if head collide with right border
             if(snake.getHeadPosition().getX() > GAME_BOARD_SIZE)
-                snake.setSnakeDead();
+                killSnake(snake);
             //Checks if head collide with top border
             if(snake.getHeadPosition().getY() < 0)
-                snake.setSnakeDead();
+                killSnake(snake);
             //Checks if head collide with bottom border
             if(snake.getHeadPosition().getY() > GAME_BOARD_SIZE)
-                snake.setSnakeDead();
+                killSnake(snake);
 
-            //Checks if snake eat an apple
-            for(Apple apple : game.getApples()){
-                if(snake.getHeadPosition().equals(apple.getPosition())){
+            //Checks if snake eats an apple
+            for(Apple apple : tempAppleCollection){
+                if(snake.getHeadPosition().posEqual(apple.getPosition())){
                     snake.setLength(snake.getLength() + 1);
+                    game.getApples().remove(apple);
                 }
             }
 
             //Check if two snakes collide
-            for(Snake otherSnakes : game.getSnakes()){
+            for(Snake otherSnakes : tempSnakeCollection){
                 //Checks if the two snakes are the same one
-                if(snake.equals(otherSnakes)) return;
+                if(snake.equals(otherSnakes)) continue;
 
                 //Checks if the head of the snake collides with another snake head
-                if(snake.getHeadPosition().equals(otherSnakes.getHeadPosition())){
+                if(snake.getHeadPosition().posEqual(otherSnakes.getHeadPosition())){
                     if(snake.getLength() == otherSnakes.getLength()){
                         Random rand = new Random(2);
                         int winner = rand.nextInt();
                         if(winner == 0){
                             snake.setLength((int)(snake.getLength() + (otherSnakes.getLength() * 0.5)));
-                            //todo probably need to change that and have something better when a snake is out
-                            otherSnakes.setSnakeDead();
+                            killSnake(otherSnakes);
                         }
                         else {
                             otherSnakes.setLength((int)(otherSnakes.getLength() + (snake.getLength() * 0.5)));
-                            snake.setSnakeDead();
+                            killSnake(snake);
                         }
 
                     }
                     //if snake is bigger than other snake, grow by 60% of other snake length
                     else if(snake.getLength() > otherSnakes.getLength()){
                         snake.setLength((int)(snake.getLength() + (otherSnakes.getLength() * 0.6)));
-                        otherSnakes.setSnakeDead();
+                        killSnake(otherSnakes);
                     }
                     else{
                         otherSnakes.setLength((int)(otherSnakes.getLength() + (snake.getLength() * 0.6)));
-                        snake.setSnakeDead();
+                        killSnake(snake);
                     }
                 }
                 //Checks if snake head collides with other snake body
-                else if(Arrays.stream(otherSnakes.getBody()).anyMatch(i -> i == snake.getHeadPosition())){
+                else if(Arrays.stream(otherSnakes.getBody()).anyMatch(i -> i.posEqual(snake.getHeadPosition()))){
                     for(int i = 1; i < otherSnakes.getLength(); ++i){
-                        if(snake.getHeadPosition().equals(otherSnakes.getBody()[i])){
+                        if(snake.getHeadPosition().posEqual(otherSnakes.getBody()[i])){
                             snake.setLength(snake.getLength() + (int)(0.5 * (otherSnakes.getLength() - i)));
                             otherSnakes.setLength(i+1);
                         }
