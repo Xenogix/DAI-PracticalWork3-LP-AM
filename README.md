@@ -134,6 +134,57 @@ The ACKNOWLEDGE data is empty as the ACKNOWLEDGE command is simply used to notif
 The REFUSE contains an error message that follows any client command that was not processed successfully.
 There are no predefined messages that should be sent and any server could send its own to notify an error to the client.
 
+#### UPDATE data
+
+The update data contains the game data which can be then processed by the client.
+
+```json
+{
+"game": {
+  "snakes":[
+    {
+      "id":"<user id>",
+      "username":"<snake username>",
+      "position":{"x":79,"y":35},
+      "color":"Red",
+      "direction":"RIGHT",
+      "body":[{"x":79,"y":35},{"x":78,"y":35},{"x":77,"y":35},{"x":76,"y":35}],
+      "length":4
+    }
+  ],
+  "apples":[
+    {"position":{"x":87,"y":30}},
+    {"position":{"x":15,"y":84}},
+    {"position":{"x":93,"y":50}},
+    {"position":{"x":23,"y":53}},
+    {"position":{"x":85,"y":96}},
+    {"position":{"x":27,"y":60}}
+  ],
+  "board":{"width":100,"height":100}
+  }
+}
+```
+<u>Snakes</u>
+
+Snake are stored in an array and contains information about the snakes :
+
+user id corresponds to a string with a UUID that can be used to identify a user.
+
+username can be used to display the username of the player and is not unique.
+
+position indicates the position of its head, and the body corresponds to each segment of the snake from the head to the tail.
+
+lenght corresponds to the snake lenght and is directly linked to its body part count.
+
+<u>Apples</u>
+
+The apples are stored in an array and solely contain their position on the game.
+
+<u>Board</u>
+
+The board indicates what size is the game and the board start coordinates are x = 0 and y = 0.
+If a board size is 100x100 this means its coordinates start from x = 0 and y = 0 and extend to x = 100 and y = 100.
+
 ### Error Handling
 
 For the connection to the game, if a player send wrong datas, the server will simply refuse the connection. And if a player is connected to the server and play the game, if he is disconnected, the snake will die sooner or later.
