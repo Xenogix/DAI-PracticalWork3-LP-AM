@@ -276,8 +276,36 @@ Game Constraints
 
 These rules create a dynamic and competitive environment where players must strategically navigate and grow their snakes while avoiding hazards and outmaneuvering opponents.
 
-
 ## CLI
+
+The server can be run using a CLI. To do this, run the snake_server.jar using the following command :
+
+```
+java -jar "<folder>/snake_server.jar"
+```
+
+Take care of replacing the "<folder>" part with the file path to the snake_server.jar file.
+
+This command will use the default configuration :
+
+- Server port => 3432
+- Multicast address => 224.12.17.11
+- Multicast port => 3433
+
+Please refer to the parameter list if you want to configure these parameters yourself :
+
+| Name |     FullName     | Parameter                                   |
+|:-----|:----------------:|:--------------------------------------------|
+| -p   |      --port      | Port on which the server will be hosted     |
+| -up  |  --update_port   | Multicast address used to send game updates |
+| -ua  | --update_address | Multicast address used to send game updates |
+
+Note that no parameter is mandatory and they can be used independently.
+
+For example, we are setting the ports and address manually in this example
+```
+java -jar "<folder>/snake_server.jar" -p 5343 -up 5444 -ua 224.12.17.6
+```
 
 ## Docker
 
