@@ -40,7 +40,7 @@ public class ClientStorage {
     }
     public synchronized void stopUpdateEndpoint() {
         if(updateEndpoint != null) updateEndpoint.stop();
-        if(this.updateEndpoint != null) endpointThread.interrupt();
+        if(updateEndpoint != null) endpointThread.interrupt();
     }
 
     public synchronized VirtualClient getVirtualClient() {

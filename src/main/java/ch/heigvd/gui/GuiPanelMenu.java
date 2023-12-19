@@ -10,6 +10,7 @@ import ch.heigvd.data.commands.CommandType;
 import ch.heigvd.data.commands.data.AcceptCommandData;
 import ch.heigvd.data.commands.data.JoinCommandData;
 import ch.heigvd.data.models.Color;
+import ch.heigvd.data.shared.Constants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,43 +21,58 @@ import java.util.Objects;
 
 
 public class GuiPanelMenu extends JPanel {
-
     private final JTextField userName,multicastIP, serverIP, serverPort, multicastPort;
+    private final JLabel userNameLabel, multicastIPLabel, serverIPLabel, serverPortLabel, multicastPortLabel;
     private final JComboBox<Color> colorSelector;
     private final JButton joinButton;
     private final GuiFrame guiFrame;
     private final ClientStorage storage = ClientStorage.getInstance();
 
-    private static final String UPDATE_ADDRESS = "224.12.17.11";
-    private static final String SERVER_ADDRESS = "localhost";
-    private static final int UPDATE_PORT = 3433;
-    private static final int SERVER_PORT = 3432;
-
     public GuiPanelMenu(GuiFrame guiFrame){
+
         this.guiFrame = guiFrame;
 
-        setLayout(new GridLayout(4,1));
+        //Set layout
+        this.setSize(200, 400);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        //Server and multicast IPs
-        userName = new JTextField("Username");
-        serverIP = new JTextField(SERVER_ADDRESS);
-        multicastIP = new JTextField(UPDATE_ADDRESS);
-        serverPort = new JTextField("3432");
-        multicastPort = new JTextField("3433");
+        //Input and labels
+        userNameLabel = new JLabel("Username");
+        userName = new JTextField(10);
+        userNameLabel.setLabelFor(userName);
+        serverIPLabel = new JLabel("Server address");
+        serverIP = new JTextField(15);
+        serverIPLabel.setLabelFor(serverIP);
+        serverPortLabel = new JLabel("Server port");
+        serverPort = new JTextField(Integer.toString(Constants.DEFAULT_SERVER_PORT), 5);
+        serverPortLabel.setLabelFor(serverPort);
+        multicastIPLabel = new JLabel("Multicast address");
+        multicastIP = new JTextField(Constants.DEFAULT_UPDATE_ADDRESS, 15);
+        multicastIPLabel.setLabelFor(multicastIP);
+        multicastPortLabel = new JLabel("Multicast port");
+        multicastPort = new JTextField(Integer.toString(Constants.DEFAULT_UPDATE_PORT), 5);
+        multicastPortLabel.setLabelFor(multicastPort);
+
+        //Add label and inputs
+        add(userNameLabel);
+        add(userName);
+        add(serverIPLabel);
         add(serverIP);
+        add(serverPortLabel);
         add(serverPort);
+        add(multicastIPLabel);
         add(multicastIP);
+        add(multicastPortLabel);
         add(multicastPort);
 
         //Color selector
         colorSelector = new JComboBox<>(Color.values());
         add(colorSelector);
 
-        // Join button
-        joinButton = new JButton("Rejoindre la partie");
+        //Join button
+        joinButton = new JButton("Join game !");
         joinButton.addActionListener(e -> joinGame());
         add(joinButton);
-
     }
 
     public void joinGame(){

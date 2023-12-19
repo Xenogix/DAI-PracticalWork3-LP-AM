@@ -31,8 +31,8 @@ public class GuiFrame extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Set if the frame can be resized
         this.setResizable(true);
-        //
-        this.pack();
+        //Show panel and set size
+        this.showMainPanel();
         //Set the visibility of the window
         this.setVisible(true);
         //Set the position of the window - this will position the window in the center
@@ -53,10 +53,12 @@ public class GuiFrame extends JFrame {
         cardLayout.show(mainPanel, "Game");
         gamePanel.grabFocus();
         storage.startUpdateEndpoint();
+        pack();
     }
 
     public void showMainPanel(){
-        cardLayout.show(mainPanel, "Menu");
         storage.stopUpdateEndpoint();
+        cardLayout.show(mainPanel, "Menu");
+        pack();
     }
 }
