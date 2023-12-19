@@ -12,8 +12,6 @@ import ch.heigvd.server.net.ServerCommandEndpoint;
 import ch.heigvd.server.net.ServerUpdateSender;
 import picocli.CommandLine;
 
-import java.io.File;
-
 @CommandLine.Command(name = "Snake server", description = "Start a server that can host an online game of snake")
 public class MainServer implements Runnable {
 
