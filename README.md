@@ -140,6 +140,10 @@ For the connection to the game, if a player send wrong datas, the server will si
 
 ### Diagram
 
+[![Functionnal use](www.plantuml.com/plantuml/png/XP0n2W8n44NxESLSm28fBMJ5Ii5AjfOmEwp1E0d9h5xVP1k987QVzyFZPuQYBklo2E18OyP3y2nwDUWAakcXNQ65vB9wyic9ueNpatChIaq0P72pMpDkyHIzGCkDaQbaJyH9GQ8oPZ_V5057yUIA0ik4hG2oFntsu-Z5OvgSSYy-Bq5xTI_gnnubBV-MVVtbBl4LU9ePXlga7l4D)]
+
+[![Error](www.plantuml.com/plantuml/png/7Swnoi9G3CNnFKznnkyR7Exg80KtHyLPmcsiWPfRSbDzVTDk1txyuGmzs6DzpyGrckCygrWy2hYZ5beIjUh25hY9VyGtwBc8Qi7Xj6ySSMbg-FjwimaZ1_-JjH2uJgy0uMvQkGU9ZTY0zYppMZA-odFjGZGavvKV)]
+
 ## Architecture
 
 For the global architecture of the game, we reuse the structure we did for the TCP practical work. 
