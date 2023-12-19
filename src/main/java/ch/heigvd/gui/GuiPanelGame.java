@@ -134,11 +134,11 @@ public class GuiPanelGame extends JPanel implements ActionListener, CommandHandl
         ch.heigvd.data.models.Color snakeColor = currentGame.getSnakes().get(i).getColor();
         Color jPanelColor;
         switch(snakeColor){
-            case Red -> jPanelColor = Color.red;
-            case Blue -> jPanelColor = Color.blue;
-            case Yellow -> jPanelColor = Color.yellow;
-            case Green -> jPanelColor = Color.green;
-            case Brown -> jPanelColor = new Color(153, 102, 0);
+            case RED -> jPanelColor = Color.red;
+            case BLUE -> jPanelColor = Color.blue;
+            case YELLOW -> jPanelColor = Color.yellow;
+            case GREEN -> jPanelColor = Color.green;
+            case BROWN -> jPanelColor = new Color(153, 102, 0);
             default -> jPanelColor = Color.white;
         }
         return jPanelColor;
