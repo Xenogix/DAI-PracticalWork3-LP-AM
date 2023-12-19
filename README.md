@@ -378,11 +378,9 @@ Now, the Snake Server is running with your specified configuration. Adjust the p
 
 ## Docker
 
-    Sure, here's a small documentation for running the server using Docker and Docker Compose.
+To facilitate easy deployment and management of the Snake Server, Docker provides a streamlined solution. Docker enables you to package the server application and its dependencies into a portable container, ensuring consistent execution across diverse environments.
 
----
-
-## Running the Snake Server with Docker and Docker Compose
+Follow the steps below to utilize Docker for running the Snake Server:
 
 ### Prerequisites
 
