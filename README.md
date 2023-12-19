@@ -136,9 +136,15 @@ There are no predefined messages that should be sent and any server could send i
 
 ### Error Handling
 
+For the connection to the game, if a player send wrong datas, the server will simply refuse the connection. And if a player is connected to the server and play the game, if he is disconnected, the snake will die sooner or later.
+
 ### Diagram
 
 ## Architecture
+
+For the global architecture of the game, we reuse the structure we did for the TCP practical work. 
+
+Of course we adapt it to the UDP protocol by sending JSON data in the datagram and we create a converter to use the data. 
 
 ### Global Diagram
 
@@ -192,14 +198,62 @@ Upon launching the application, users are greeted by the GuiPanelMenu. This pane
 
 After a successful connection, the interface switches to the GuiPanelGame. This panel displays the game field, represented by a grid where snakes move around. Players can see the snakes of different players in distinct colors, as well as apples scattered on the field to be collected. Game controls are managed via keyboard inputs, allowing players to navigate their snake in different directions. The game unfolds in real-time, and the GUI updates accordingly to reflect the current state of the game.
 
- <u>Panel Management and Transitions</u>
+<u>Panel Management and Transitions</u>
 
 GuiFrame is the application's main window that contains a CardLayout managing the transitions between different panels (GuiPanelMenu and GuiPanelGame). Users start at the main menu and, once connected, switch to the game panel. This modular approach makes the user interface flexible and easy to navigate.
 
 ### Rules
 
-## CLI eventually
+Objective
+
+The primary goal is to grow your snake to be the largest in the game.
+Ways to Grow
+
+  Eating Apples: Similar to the classic snake game, consuming apples increases your snake's length.
+  Eating Other Snakes:
+    If your snake's head collides with another snake's body, you cut that snake at the point of impact. Your snake then grows by 50% of the length of the portion consumed. For example, if you eat 4 (index 5 on 9) segments of a 9-segment snake, your snake grows by 2 segments.
+    Head-to-Head Collisions: When two snakes' heads collide, the larger snake survives, consuming 50% of the smaller snake's length. In the event of a tie in size, the outcome is random.
+
+Game Constraints
+
+  Colliding with Borders: If your snake hits a border, it dies.
+  Respawning: If your snake dies, you have the option to respawn and re-enter the game.
+
+These rules create a dynamic and competitive environment where players must strategically navigate and grow their snakes while avoiding hazards and outmaneuvering opponents.
+
+
+## CLI
+
+## Docker
 
 ## Example of operation (screenshot probably)
 
 ## Conclusion
+
+Overview
+
+  Enjoyable Experience: The project was ambitious yet enjoyable, providing a great learning experience.
+  Technical Implementation:
+    UDP Protocol: Successfully implemented, ensuring efficient data transmission.
+    Data Converter: Our custom converter effectively sends data within UDP datagrams.
+  Game Development:
+    Simplicity Due to Time Constraints: While there are many potential enhancements, time limitations led us to maintain simplicity.
+    Testing: Limited testing was conducted, but the game functions well for one or two players.
+  Graphical User Interface (GUI):
+    Functional Focus: The project prioritized functionality over aesthetics, leading to a basic but functional GUI.
+
+Areas for Improvement
+
+  Enhancing the GUI:
+      Current State: The GUI is functional but lacks visual appeal.
+      Potential Enhancement: With additional effort, the GUI can be improved to be more aesthetically pleasing.
+
+  Move Prediction for Snakes:
+      Objective: To enhance game fluidity and visual appeal.
+      Approach: Implementing movement prediction algorithms for smoother snake movements.
+
+  Adding New Game Rules and Features:
+      Expandability: The application's scalable design allows for easy addition of new features.
+      Ideas for New Features: Introducing various fruits with different effects, such as bonuses, maluses, length variations, speed adjustments, etc., to add diversity and fun to the gameplay.
+
+These improvements aim to enhance user experience, gameplay fluidity, and visual appeal, making the game more engaging and enjoyable.
