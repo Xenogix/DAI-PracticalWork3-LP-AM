@@ -304,38 +304,130 @@ Game Constraints
 
 These rules create a dynamic and competitive environment where players must strategically navigate and grow their snakes while avoiding hazards and outmaneuvering opponents.
 
-## CLI
+## Command Line Interface
 
-The server can be run using a CLI. To do this, run the snake_server.jar using the following command :
+To run the server using the Command Line Interface (CLI), follow these steps:
 
-```
-java -jar "<folder>/snake_server.jar"
-```
+### Downloading the Server
 
-Take care of replacing the "<folder>" part with the file path to the snake_server.jar file.
+1. Visit the official Docker website to download and install Docker: [Docker Installation Guide](https://docs.docker.com/get-docker/)
 
-This command will use the default configuration :
+### Running the Server
 
-- Server port => 3432
-- Multicast address => 224.12.17.11
-- Multicast port => 3433
+2. After installing Docker, run the Snake Server JAR file with the following command:
 
-Please refer to the parameter list if you want to configure these parameters yourself :
+    ```bash
+    java -jar "<folder>/snake_server.jar"
+    ```
 
-| Name |     FullName     | Parameter                                   |
-|:-----|:----------------:|:--------------------------------------------|
-| -p   |      --port      | Port on which the server will be hosted     |
-| -up  |  --update_port   | Multicast address used to send game updates |
-| -ua  | --update_address | Multicast address used to send game updates |
+   Make sure to replace `"<folder>"` with the actual file path to the `snake_server.jar` file on your system.
 
-Note that no parameter is mandatory and they can be used independently.
+   By default, this command uses the following configuration:
 
-For example, we are setting the ports and address manually in this example
-```
-java -jar "<folder>/snake_server.jar" -p 5343 -up 5444 -ua 224.12.17.6
-```
+    - **Server port:** 3432
+    - **Multicast address:** 224.12.17.11
+    - **Multicast port:** 3433
+
+### Custom Configuration
+
+3. If you wish to configure these parameters yourself, refer to the parameter list:
+
+   | Name |     Full Name      | Parameter                                     |
+       |:----:|:------------------:|:----------------------------------------------|
+   | -p   |      --port        | Port on which the server will be hosted       |
+   | -up  |  --update_port     | Multicast port used to send game updates      |
+   | -ua  | --update_address  | Multicast address used to send game updates   |
+
+   Note that no parameter is mandatory, and they can be used independently.
+
+### Example Configuration
+
+4. For example, to set the ports and address manually, use the following command:
+
+    ```bash
+    java -jar "<folder>/snake_server.jar" -p 5343 -up 5444 -ua 224.12.17.6
+    ```
+
+   This command customizes the server configuration with the specified port (`-p 5343`), multicast port (`-up 5444`), and multicast address (`-ua 224.12.17.6`).
+
+Now, the Snake Server is running with your specified configuration. Adjust the parameters as needed based on your requirements.
 
 ## Docker
+
+    Sure, here's a small documentation for running the server using Docker and Docker Compose.
+
+---
+
+## Running the Snake Server with Docker and Docker Compose
+
+### Prerequisites
+
+Make sure you have Docker and Docker Compose installed on your machine.
+
+- [Install Docker](https://docs.docker.com/get-docker/)
+- [Install Docker Compose](https://docs.docker.com/compose/install/)
+
+### Steps
+
+1. **Clone the Repository:**
+   Clone the repository containing the Dockerfile and Docker Compose file.
+
+   ```bash
+   git clone https://github.com/Xenogix/DAI-PracticalWork3-LP-AM
+   cd your-repository
+   ```
+
+2. **Build the Docker Image:**
+   Build the Docker image using the provided Dockerfile.
+
+   ```bash
+   docker build -t snake_server:latest .
+   ```
+
+3. **Run the Docker Compose:**
+   Use Docker Compose to start the Snake Server.
+
+   ```bash
+   docker-compose up -d
+   ```
+
+   This will start the Snake Server in the background.
+
+4. **Access the Snake Server:**
+   The Snake Server is now running and accessible on port 3432. You can interact with it using your application or tools that communicate over UDP.
+
+### Example Docker Compose File
+
+```yaml
+version: '3.8'
+
+services:
+  snake-server:
+    image: snake_server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3432:3432/udp"
+    networks:
+      - network
+
+networks:
+  network:
+    name: network
+```
+
+This example Docker Compose file defines a service named `snake-server` using the built image. It exposes port 3432 for UDP communication and connects to a custom network named `network`.
+
+### Stopping the Server
+
+To stop the Snake Server, use the following command:
+
+```bash
+docker-compose down
+```
+
+This will stop and remove the containers defined in the Docker Compose file.
 
 ## Example of operation (screenshot probably)
 
