@@ -9,11 +9,11 @@ import java.net.*;
 import static ch.heigvd.data.shared.Constants.PACKET_SIZE;
 
 public class ClientUpdateEndpoint implements Runnable {
-    private final String multicastAddress;
-    private final int multicastPort;
+    private String multicastAddress;
+    private int multicastPort;
     private final CommandHandler clientCommandHandler;
     private boolean isRunning = true;
-
+    
     public ClientUpdateEndpoint(String multicastAddress, int multicastPort, CommandHandler clientCommandHandler){
         this.multicastAddress = multicastAddress;
         this.multicastPort = multicastPort;
@@ -38,5 +38,21 @@ public class ClientUpdateEndpoint implements Runnable {
 
     public void stop() {
         isRunning = false;
+    }
+
+    public CommandHandler getClientCommandHandler() {
+        return clientCommandHandler;
+    }
+
+    public void setMulticastAddress(String multicastAddress) {
+        this.multicastAddress = multicastAddress;
+    }
+
+    public int getMulticastPort() {
+        return multicastPort;
+    }
+
+    public void setMulticastPort(int multicastPort) {
+        this.multicastPort = multicastPort;
     }
 }

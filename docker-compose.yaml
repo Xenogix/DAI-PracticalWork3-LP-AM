@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  snake-server:
+    image: ghcr.io/xenogix/snake_server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3432:3432/udp"
+    networks:
+      - network
+
+networks:
+  network:
+    name: network
