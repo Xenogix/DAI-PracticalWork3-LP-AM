@@ -304,29 +304,53 @@ Game Constraints
 
 These rules create a dynamic and competitive environment where players must strategically navigate and grow their snakes while avoiding hazards and outmaneuvering opponents.
 
+I apologize for the confusion. You are correct; running a JAR file does not require Docker. I appreciate your clarification. Here's an updated version:
+
 ## Command Line Interface
 
-To run the server using the Command Line Interface (CLI), follow these steps:
-
-### Downloading the Server
-
-1. Visit the official Docker website to download and install Docker: [Docker Installation Guide](https://docs.docker.com/get-docker/)
+The server can be easily launched using the Command Line Interface (CLI) without the need for Docker. Follow these steps:
 
 ### Running the Server
 
-2. After installing Docker, run the Snake Server JAR file with the following command:
+1. Download the server JAR file [here](https://example.com/snake_server.jar).
+
+2. Open a terminal and navigate to the directory containing the `snake_server.jar` file.
+
+3. Run the server using the following command:
 
     ```bash
-    java -jar "<folder>/snake_server.jar"
+    java -jar "snake_server.jar"
     ```
-
-   Make sure to replace `"<folder>"` with the actual file path to the `snake_server.jar` file on your system.
 
    By default, this command uses the following configuration:
 
     - **Server port:** 3432
     - **Multicast address:** 224.12.17.11
     - **Multicast port:** 3433
+
+### Custom Configuration
+
+4. If you want to customize the configuration, refer to the parameter list:
+
+   | Name |     Full Name      | Parameter                                     |
+       |:----:|:------------------:|:----------------------------------------------|
+   | -p   |      --port        | Port on which the server will be hosted       |
+   | -up  |  --update_port     | Multicast port used to send game updates      |
+   | -ua  | --update_address  | Multicast address used to send game updates   |
+
+   No parameter is mandatory, and they can be used independently.
+
+### Example Configuration
+
+5. For example, to set the ports and address manually, use the following command:
+
+    ```bash
+    java -jar "snake_server.jar" -p 5343 -up 5444 -ua 224.12.17.6
+    ```
+
+   This command customizes the server configuration with the specified port (`-p 5343`), multicast port (`-up 5444`), and multicast address (`-ua 224.12.17.6`).
+
+Now, the Snake Server is running with your specified configuration. Adjust the parameters as needed based on your requirements.
 
 ### Custom Configuration
 
