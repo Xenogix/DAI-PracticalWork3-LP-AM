@@ -33,6 +33,7 @@ public class CommandSerializer {
 
             switch (command.getCommandType()) {
                 case ACCEPT -> command.setValue(mapper.convertValue(value, new TypeReference<AcceptCommandData>() { }));
+                case ACKNOWLEDGE -> command.setValue(mapper.convertValue(value, new TypeReference<AcknowledgeCommandData>() { }));
                 case REFUSE -> command.setValue(mapper.convertValue(value, new TypeReference<RefuseCommandData>() { }));
                 case UPDATE -> command.setValue(mapper.convertValue(value, new TypeReference<UpdateCommandData>() { }));
                 case JOIN -> command.setValue(mapper.convertValue(value, new TypeReference<JoinCommandData>() { }));

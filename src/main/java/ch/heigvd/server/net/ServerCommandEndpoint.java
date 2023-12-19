@@ -31,7 +31,7 @@ public class ServerCommandEndpoint implements Runnable {
                 new Thread(new CommandResponder(packet, socket, commandHandler)).start();
             }
         }catch (Exception e){
-            Logger.log(String.format("The server encountered an error : %s", serverPort), this, LogLevel.Information);
+            Logger.log(String.format("The server encountered an error : %s", e.getMessage()), this, LogLevel.Information);
         }
     }
 

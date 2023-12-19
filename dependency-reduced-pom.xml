@@ -11,11 +11,33 @@
         <version>3.5.1</version>
         <executions>
           <execution>
+            <id>server</id>
             <phase>package</phase>
             <goals>
               <goal>shade</goal>
             </goals>
             <configuration>
+              <outputFile>builds/snake_server.jar</outputFile>
+              <shadedArtifactAttached>false</shadedArtifactAttached>
+              <transformers>
+                <transformer>
+                  <mainClass>ch.heigvd.MainServer</mainClass>
+                </transformer>
+                <transformer>
+                  <resource>MANIFEST.MF</resource>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+          <execution>
+            <id>client</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <outputFile>builds/snake_client.jar</outputFile>
+              <shadedArtifactAttached>false</shadedArtifactAttached>
               <transformers>
                 <transformer>
                   <mainClass>ch.heigvd.MainClient</mainClass>

@@ -4,34 +4,41 @@ import ch.heigvd.data.abstractions.GameUpdateListener;
 import ch.heigvd.data.abstractions.ResponseCommandHandler;
 import ch.heigvd.data.abstractions.VirtualUpdateServer;
 import ch.heigvd.data.logs.Logger;
-import ch.heigvd.data.models.Game;
+import ch.heigvd.data.shared.Constants;
 import ch.heigvd.server.ServerStorage;
 import ch.heigvd.server.commands.ServerCommandHandler;
+import ch.heigvd.server.commands.ServerUpdateListener;
 import ch.heigvd.server.net.ServerCommandEndpoint;
 import ch.heigvd.server.net.ServerUpdateSender;
+import picocli.CommandLine;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+@CommandLine.Command(name = "Snake server", description = "Start a server that can host an online game of snake")
+public class MainServer implements Runnable {
 
-public class MainServer {
-    private static final String UPDATE_ADDRESS = "224.12.17.11";
-    private static final int UPDATE_PORT = 3433;
-    private static final int SERVER_PORT = 3432;
     public static void main(String[] args) {
+        new CommandLine(new MainServer()).execute(args);
+    }
 
+    @CommandLine.Option(names = { "-p", "--port" }, description = "Port of the server", required = false)
+    private int serverPort = Constants.DEFAULT_SERVER_PORT;
+    @CommandLine.Option(names = { "-ua", "--update_address" }, description = "Address for the multicast updates", required = false)
+    private String multicastAddress = Constants.DEFAULT_UPDATE_ADDRESS;
+    @CommandLine.Option(names = { "-up", "--update_port" }, description = "Port for the multicast updates", required = false)
+    private int multicastPort = Constants.DEFAULT_UPDATE_PORT;
+
+    public void run() {
         // Enable the logger
         Logger.setEnabled();
 
         // Initiate the unicast server
         ResponseCommandHandler commandHandler = new ServerCommandHandler();
-        ServerCommandEndpoint testServer = new ServerCommandEndpoint(SERVER_PORT, commandHandler);
+        ServerCommandEndpoint testServer = new ServerCommandEndpoint(serverPort, commandHandler);
 
         // Initiate the multicast server and event handling
         ServerStorage storage = ServerStorage.getInstance();
-        VirtualUpdateServer sender = new ServerUpdateSender(UPDATE_ADDRESS, UPDATE_PORT);
-        GameUpdateListener gameUpdateListener = new DummyGameUpdateListener(sender);
-        storage.getGameEngine().addListner(gameUpdateListener);
+        VirtualUpdateServer sender = new ServerUpdateSender(multicastAddress, multicastPort);
+        GameUpdateListener listener = new ServerUpdateListener(sender);
+        storage.getGameEngine().addListner(listener);
 
         // Start threads
         Thread endpointThread = new Thread(testServer);
@@ -45,23 +52,6 @@ public class MainServer {
         }
         catch (Exception ex) {
             System.out.println(ex.getMessage());
-        }
-    }
-
-    static class DummyGameUpdateListener implements GameUpdateListener {
-        private final VirtualUpdateServer updateSender;
-        private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-        private Future<?> updateTask;
-
-        public DummyGameUpdateListener(VirtualUpdateServer updateSender) {
-            this.updateSender = updateSender;
-        }
-
-        @Override
-        public void gameUpdated(Game game) {
-            if (updateTask == null || updateTask.isDone()) {
-                updateTask = executorService.submit(() -> updateSender.send(game));
-            }
         }
     }
 }
