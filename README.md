@@ -1,5 +1,33 @@
 # Practical Work 3 - Arthur Menétrey & Lionel Pollien
 
+## Table of contents
+
+* [Practical Work 3 - Arthur Menétrey & Lionel Pollien](#practical-work-3---arthur-menétrey--lionel-pollien)
+  * [Introduction](#introduction)
+  * [Protocol](#protocol)
+    * [Overview](#overview)
+    * [Transport Mechanism](#transport-mechanism)
+    * [Commands](#commands)
+    * [Data format](#data-format)
+      * [JOIN data](#join-data)
+      * [INPUT data](#input-data)
+      * [ACCEPT data](#accept-data)
+      * [ACKNOWLEDGE data](#acknowledge-data)
+      * [REFUSE data](#refuse-data)
+      * [UPDATE data](#update-data)
+    * [Error Handling](#error-handling)
+    * [Diagram](#diagram)
+  * [Architecture](#architecture)
+    * [Global Diagram](#global-diagram)
+    * [UPD](#upd)
+  * [Game Engine](#game-engine)
+    * [Graphical User Interface (GUI)](#graphical-user-interface-gui)
+    * [Rules](#rules)
+  * [CLI](#cli)
+  * [Docker](#docker)
+  * [Example of operation (screenshot probably)](#example-of-operation-screenshot-probably)
+  * [Conclusion](#conclusion)
+
 ## Introduction
 
 This program allows you to play a multiplayer game based on the famous game "Snake."
