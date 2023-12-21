@@ -65,13 +65,15 @@ public class GuiPanelGame extends JPanel implements ActionListener, CommandHandl
 
     private boolean checkPlayerDead(boolean isPlayerInGame) {
 
+
         // If the player has not been spawned or it's in the current game that means it's alive
         // Else this means the snake has been killed
         if(!hasSpawned || isPlayerInGame) return false;
 
         // Set spawn to false and return to main menu
         hasSpawned = false;
-        JOptionPane.showMessageDialog(this, "You are dead !");
+        //todo add score when dead
+        JOptionPane.showMessageDialog(this, "You are dead ! \n Your score is : ");
         guiFrame.showMainPanel();
 
         return true;
