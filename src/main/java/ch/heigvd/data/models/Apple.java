@@ -7,9 +7,13 @@ public class Apple {
     @JsonProperty("position")
     private Point position;
 
+    @JsonProperty("power")
+    private int power;
+
     @JsonCreator
-    public Apple(@JsonProperty("position") Point position) {
+    public Apple(@JsonProperty("position") Point position, @JsonProperty("power") int power) {
         this.position = position;
+        this.power = power;
     }
 
     public Point getPosition() {
@@ -17,5 +21,9 @@ public class Apple {
     }
     public void setPosition(Point position) {
         this.position = position;
+    }
+
+    public int getPower() {
+        return power;
     }
 }

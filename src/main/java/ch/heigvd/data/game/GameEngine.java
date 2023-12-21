@@ -10,7 +10,7 @@ public class GameEngine implements Runnable {
     private static final int MAX_PLAYER_COUNT = 10;
     private static final int GAME_BOARD_SIZE = 100; //todo checks if its the same as the ui
     private static final int SNAKE_SPAWN_SIZE = 4;
-    private static final int APPLE_COUNT = 6;
+    private static final int APPLE_COUNT = 8;
     private final Game game = new Game(GAME_BOARD_SIZE, GAME_BOARD_SIZE);
     private final ArrayList<GameUpdateListener> gameUpdateListeners = new ArrayList<>();
     private final Random random = new Random();
@@ -93,8 +93,11 @@ public class GameEngine implements Runnable {
 
     private void applySpawnApple() {
         while(game.getApples().size() < APPLE_COUNT) {
+            Random random = new Random();
+            int power = random.nextInt(1, 5);
+
             Point position = getSpawnPoint();
-            game.getApples().add(new Apple(position));
+            game.getApples().add(new Apple(position, power));
         }
     }
 
@@ -124,10 +127,15 @@ public class GameEngine implements Runnable {
     }
 
     private void applySnakeCollisions() {
+        checkBorderCollision();
+        checkAppleCollision();
+        checkBattleCollision();
+    }
+
+    private void checkBorderCollision(){
         List<Snake> tempSnakeCollection = new ArrayList<>(game.getSnakes());
-        List<Apple> tempAppleCollection = new ArrayList<>(game.getApples());
+
         for(Snake snake : tempSnakeCollection){
-            //Checks if snake collide with a border
             //Checks if head collide left border
             if(snake.getHeadPosition().getX() < 0)
                 killSnake(snake);
@@ -140,7 +148,13 @@ public class GameEngine implements Runnable {
             //Checks if head collide with bottom border
             if(snake.getHeadPosition().getY() > GAME_BOARD_SIZE)
                 killSnake(snake);
+        }
+    }
 
+    private void checkAppleCollision(){
+        List<Snake> tempSnakeCollection = new ArrayList<>(game.getSnakes());
+        List<Apple> tempAppleCollection = new ArrayList<>(game.getApples());
+        for(Snake snake : tempSnakeCollection){
             //Checks if snake eats an apple
             for(Apple apple : tempAppleCollection){
                 if(snake.getHeadPosition().posEqual(apple.getPosition())){
@@ -148,9 +162,15 @@ public class GameEngine implements Runnable {
                     game.getApples().remove(apple);
                 }
             }
+        }
+    }
 
+    private void checkBattleCollision(){
+        List<Snake> tempSnakeCollection = new ArrayList<>(game.getSnakes());
+        for(Snake snake : tempSnakeCollection){
             //Check if two snakes collide
             for(Snake otherSnakes : tempSnakeCollection){
+
                 //Checks if the two snakes are the same one
                 if(snake.equals(otherSnakes)) continue;
 
