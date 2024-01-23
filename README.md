@@ -335,10 +335,10 @@ The server can be easily launched using the Command Line Interface (CLI) without
 4. If you want to customize the configuration, refer to the parameter list:
 
    | Name |     Full Name      | Parameter                                     |
-       |:----:|:------------------:|:----------------------------------------------|
+   |:----:|:------------------:|:----------------------------------------------|
    | -p   |      --port        | Port on which the server will be hosted       |
    | -up  |  --update_port     | Multicast port used to send game updates      |
-   | -ua  | --update_address  | Multicast address used to send game updates   |
+   | -ua  | --update_address   | Multicast address used to send game updates   |
 
    No parameter is mandatory, and they can be used independently.
 
@@ -359,10 +359,10 @@ Now, the Snake Server is running with your specified configuration. Adjust the p
 3. If you wish to configure these parameters yourself, refer to the parameter list:
 
    | Name |     Full Name      | Parameter                                     |
-       |:----:|:------------------:|:----------------------------------------------|
+   |:----:|:------------------:|:----------------------------------------------|
    | -p   |      --port        | Port on which the server will be hosted       |
    | -up  |  --update_port     | Multicast port used to send game updates      |
-   | -ua  | --update_address  | Multicast address used to send game updates   |
+   | -ua  |  --update_address  | Multicast address used to send game updates   |
 
    Note that no parameter is mandatory, and they can be used independently.
 
@@ -444,29 +444,29 @@ docker pull ghcr.io/polionel/snake-server:latest
 
 ## Conclusion
 
-Overview
+**Overview**
 
-  Enjoyable Experience: The project was ambitious yet enjoyable, providing a great learning experience.
-  Technical Implementation:
+  <u>Enjoyable Experience</u>: The project was ambitious yet enjoyable, providing a great learning experience.
+  <u>Technical Implementation</u>:
     UDP Protocol: Successfully implemented, ensuring efficient data transmission.
     Data Converter: Our custom converter effectively sends data within UDP datagrams.
-  Game Development:
+  <u>Game Development</u>:
     Simplicity Due to Time Constraints: While there are many potential enhancements, time limitations led us to maintain simplicity.
     Testing: Limited testing was conducted, but the game functions well for one or two players.
-  Graphical User Interface (GUI):
+  <u>Graphical User Interface (GUI)</u>:
     Functional Focus: The project prioritized functionality over aesthetics, leading to a basic but functional GUI.
 
-Areas for Improvement
+**Areas for Improvement**
 
-  Enhancing the GUI:
+  <u>Enhancing the GUI</u>:
       Current State: The GUI is functional but lacks visual appeal.
       Potential Enhancement: With additional effort, the GUI can be improved to be more aesthetically pleasing.
 
-  Move Prediction for Snakes:
+  <u>Move Prediction for Snakes</u>:
       Objective: To enhance game fluidity and visual appeal.
       Approach: Implementing movement prediction algorithms for smoother snake movements.
 
-  Adding New Game Rules and Features:
+  <u>Adding New Game Rules and Features</u>:
       Expandability: The application's scalable design allows for easy addition of new features.
       Ideas for New Features: Introducing various fruits with different effects, such as bonuses, maluses, length variations, speed adjustments, etc., to add diversity and fun to the gameplay.
 
